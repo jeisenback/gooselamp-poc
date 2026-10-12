@@ -22,7 +22,7 @@ signal health_changed(health: int)
 signal died
 
 var input_override: PlayerInput = null   # tests set this; null polls real input
-var compartments: Array[Compartment] = []  # every compartment currently overlapping, last entered last
+var tracker := CompartmentTracker.new()  # every compartment currently overlapping, last entered last
 var facing: int = 1                 # +1 right, -1 left
 var grabbed: bool = false
 var grab_normal: Vector2 = Vector2.ZERO
@@ -102,14 +102,13 @@ func respawn(at: Vector2) -> void:
 
 ## True when outside every compartment or when the last one entered has no gravity.
 func in_zero_g() -> bool:
-	return compartments.is_empty() or not compartments[-1].has_gravity()
+	return tracker.zero_g()
 
 func enter_compartment(c: Compartment) -> void:
-	compartments.erase(c)
-	compartments.append(c)
+	tracker.enter(c)
 
 func exit_compartment(c: Compartment) -> void:
-	compartments.erase(c)
+	tracker.exit(c)
 
 ## False while cooling down. Emits `fired` and starts the cooldown.
 func fire(direction: Vector2) -> bool:

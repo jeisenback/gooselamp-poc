@@ -33,7 +33,7 @@ func test_flying_into_gravity_arcs_and_lands() -> void:
 func test_outside_every_compartment_is_zero_g() -> void:
 	var p := spawn_player(Vector2(0, 0))
 	await physics_frames(2)
-	assert_true(p.compartments.is_empty(), "no compartment")
+	assert_true(p.tracker.compartments.is_empty(), "no compartment")
 	assert_true(p.in_zero_g(), "space is zero-g")
 	p.velocity = Vector2(10, 10)
 	await physics_frames(10)
@@ -47,10 +47,10 @@ func test_leaving_one_of_two_overlapping_compartments_keeps_the_other() -> void:
 	await physics_frames(1)
 	var p := spawn_player(Vector2(200, 0))   # inside both
 	await physics_frames(2)
-	assert_eq(p.compartments.size(), 2, "in both")
+	assert_eq(p.tracker.compartments.size(), 2, "in both")
 	p.global_position = Vector2(550, 0)        # only the dead room now
 	await physics_frames(2)
-	assert_eq(p.compartments.size(), 1, "left the live room")
+	assert_eq(p.tracker.compartments.size(), 1, "left the live room")
 	assert_true(p.in_zero_g(), "the remaining one rules")
 
 func test_the_last_compartment_entered_rules_an_overlap() -> void:
@@ -64,7 +64,7 @@ func test_the_last_compartment_entered_rules_an_overlap() -> void:
 	assert_true(not p.in_zero_g(), "gravity in the live room alone")
 	p.global_position = Vector2(200, 0)        # into the overlap: dead entered last
 	await physics_frames(2)
-	assert_eq(p.compartments.size(), 2, "in both")
+	assert_eq(p.tracker.compartments.size(), 2, "in both")
 	assert_true(p.in_zero_g(), "the dead room, entered last, rules")
 
 func test_rising_into_gravity_keeps_its_upward_speed() -> void:
