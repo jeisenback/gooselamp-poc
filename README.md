@@ -27,3 +27,13 @@ godot --headless --fixed-fps 60 -s tests/run_tests.gd
 ```
 
 Exit code 0 means every test passed. CI runs the same two commands on every pull request.
+
+## Try it
+
+Run the project (`godot` in this directory, or press play in the editor). The main scene is a test room: a box 2400 px wide with a bright seam down the middle. Left of the seam the plates are live and there is a floor; right of the seam the plates are dead and the compartment is zero-g, tinted cool, with a pillar in the middle.
+
+- Walk right across the seam at speed and keep going straight: momentum crosses intact, nothing falls.
+- Hold Grab (Shift) and drift into the pillar: you stop dead. Aim with the move keys and press Jump (Space) to kick off it.
+- Fire (C) in zero-g to push yourself the other way; the gun is the only thruster.
+- Swing (X) at the panel on the left wall at floor height to stop the ring: the left compartment turns cool and everything in it is zero-g. Swing it again to restart the ring.
+- Swing at the panel on the pillar to open the vents: the right compartment becomes a wind blowing right, and you drift toward the far wall unless you grab something.
