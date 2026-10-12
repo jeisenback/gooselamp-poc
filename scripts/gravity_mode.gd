@@ -14,6 +14,8 @@ func step(p: Player, input: PlayerInput, delta: float) -> void:
 		p.velocity.y = -Player.JUMP_SPEED
 	if p.velocity.y < -Player.JUMP_CUT_SPEED and not input.jump_held:
 		p.velocity.y = -Player.JUMP_CUT_SPEED
+	if input.swing_pressed:
+		p.swing.start(p.aim_for_swing(input))
 	if input.fire_pressed:
 		p.fire(input.aim if input.aim != Vector2.ZERO else Vector2(p.facing, 0))
 	p.move_and_slide()

@@ -14,6 +14,8 @@ func step(p: Player, input: PlayerInput, delta: float) -> void:
 		var dir := input.aim if input.aim != Vector2.ZERO else p.grab_normal
 		p.velocity = dir * Player.KICK_SPEED
 		p.grabbed = false
+	if input.swing_pressed:
+		p.swing.start(p.aim_for_swing(input))
 	if input.fire_pressed:
 		var dir := input.aim if input.aim != Vector2.ZERO else Vector2(p.facing, 0)
 		if p.fire(dir):

@@ -22,8 +22,13 @@ var grabbed: bool = false
 var grab_normal: Vector2 = Vector2.ZERO
 var fire_cooldown: float = 0.0
 
+@onready var swing: Swing = $Swing
+
 var _gravity_mode := GravityMode.new()
 var _zero_g_mode := ZeroGMode.new()
+
+func _ready() -> void:
+	swing.landed.connect(_on_swing_landed)
 
 func _physics_process(delta: float) -> void:
 	var input: PlayerInput = input_override if input_override != null else PlayerInput.poll()
@@ -51,3 +56,23 @@ func fire(direction: Vector2) -> bool:
 	fire_cooldown = FIRE_COOLDOWN
 	fired.emit(direction)
 	return true
+
+## Where a swing goes. In gravity: up, down only in the air, else forward.
+## In zero-g: the aim, else forward.
+func aim_for_swing(input: PlayerInput) -> Vector2:
+	if in_zero_g():
+		return input.aim if input.aim != Vector2.ZERO else Vector2(facing, 0)
+	if input.aim.y < 0.0:
+		return Vector2.UP
+	if input.aim.y > 0.0 and not is_on_floor():
+		return Vector2.DOWN
+	return Vector2(facing, 0)
+
+func _on_swing_landed(target: Node2D, dir: Vector2) -> void:
+	if target.has_method("hit"):
+		target.hit(self, dir)
+	if in_zero_g():
+		velocity = -dir * KICK_SPEED # ricochet: pogo without a floor
+		grabbed = false
+	elif dir == Vector2.DOWN:
+		velocity.y = -JUMP_SPEED # pogo
