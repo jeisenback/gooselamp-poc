@@ -124,6 +124,7 @@ func respawn(at: Vector2) -> void:
 	grabbed = false
 	jumping = false
 	global_position = at
+	reset_physics_interpolation()
 	heal_full()
 
 ## True when outside every compartment or when the last one entered has no gravity.

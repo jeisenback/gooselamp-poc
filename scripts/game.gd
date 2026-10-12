@@ -69,6 +69,8 @@ func enter(room_name: String, exit_name: String) -> void:
 	camera.limit_bottom = int(b.end.y)
 	camera.global_position = player.global_position
 	camera.reset_smoothing()
+	player.reset_physics_interpolation() # a teleport, not a move: no smear from the old room
+	camera.reset_physics_interpolation()
 	WorldState.visit(room_name)
 	$Map.set_current(room_name)
 	_cooldown = SWAP_COOLDOWN
