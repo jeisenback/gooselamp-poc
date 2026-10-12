@@ -82,3 +82,18 @@ func test_fire_breaks_a_grab() -> void:
 	await physics_frames(1)
 	assert_true(not p.grabbed, "firing lets go")
 	assert_true(p.velocity.is_equal_approx(Vector2.LEFT * Player.RECOIL_SPEED), "pushed off the wall")
+
+func test_kick_along_the_grabbed_surface_lets_go() -> void:
+	var r := make_room(false)
+	var p := spawn_player(Vector2(900, 0))
+	p.velocity = Vector2(400, 0)
+	p.input_override.grab_held = true
+	await physics_frames(frame_count(1.0))
+	assert_true(p.grabbed, "grabbed the right wall")
+	p.input_override.aim = Vector2.UP
+	p.input_override.jump_pressed = true
+	await physics_frames(1)
+	p.input_override.jump_pressed = false
+	await physics_frames(5)
+	assert_true(not p.grabbed, "still going, not re-latched by the wall it is sliding along")
+	assert_true(p.velocity.is_equal_approx(Vector2.UP * Player.KICK_SPEED), "kicked up along the wall, got %s" % p.velocity)

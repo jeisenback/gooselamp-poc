@@ -49,3 +49,19 @@ func test_ricochet_in_zero_g_rebounds_in_any_direction() -> void:
 	p.input_override.swing_pressed = true
 	await physics_frames(2)
 	assert_true(p.velocity.is_equal_approx(-dir * Player.KICK_SPEED), "rebounds opposite the swing, got %s" % p.velocity)
+
+func test_pogo_rises_like_a_jump_without_holding_jump() -> void:
+	var r := make_room(true)
+	var p := spawn_player(Vector2(0, r.floor_y - 200))
+	_block(Vector2(0, r.floor_y - 200 + Swing.REACH + 20))
+	p.input_override.aim = Vector2.DOWN
+	p.input_override.swing_pressed = true
+	await physics_frames(2)
+	p.input_override.swing_pressed = false
+	p.input_override.aim = Vector2.ZERO
+	var start_y := p.global_position.y
+	var top := start_y
+	for i in range(frame_count(1.0)):
+		await physics_frames(1)
+		top = minf(top, p.global_position.y)
+	assert_true(start_y - top > 80.0, "a pogo rises over 80 px with jump released, got %f" % (start_y - top))

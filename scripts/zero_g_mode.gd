@@ -25,6 +25,7 @@ func step(p: Player, input: PlayerInput, delta: float) -> void:
 	if p.grabbed:
 		p.velocity = Vector2.ZERO
 		return # held fast: no movement at all
+	var arriving := p.velocity
 	p.move_and_slide()
 	# Floating motion leaves velocity alone on a collision: a surface takes the
 	# component into it, so a wall stops you and a glancing hit slides.
@@ -33,8 +34,12 @@ func step(p: Player, input: PlayerInput, delta: float) -> void:
 		if p.velocity.dot(normal) < 0.0:
 			p.velocity = p.velocity.slide(normal)
 	if input.grab_held and p.get_slide_collision_count() > 0:
-		if not p.grabbed:
-			Sfx.play("grab")
-		p.grabbed = true
-		p.grab_normal = p.get_slide_collision(0).get_normal()
-		p.velocity = Vector2.ZERO
+		var normal := p.get_slide_collision(0).get_normal()
+		# Latch on arrival (moving into the surface) or at rest against it; a body
+		# sliding along a surface it just kicked off is still in contact and must not.
+		if arriving.dot(normal) < 0.0 or arriving.is_zero_approx():
+			if not p.grabbed:
+				Sfx.play("grab")
+			p.grabbed = true
+			p.grab_normal = normal
+			p.velocity = Vector2.ZERO

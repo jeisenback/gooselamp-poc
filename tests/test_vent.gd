@@ -27,7 +27,10 @@ func test_barely_moves_you_on_the_ground() -> void:
 func test_skips_bodies_without_velocity() -> void:
 	var r := make_room(false)
 	var v := _vent(Vector2(400, 400), Vector2.ZERO)
-	var prop := StaticBody2D.new()
+	# A rigid prop: it pairs with the vent (a static one never would) and has
+	# linear_velocity, not velocity, so the guard is what keeps this from erroring.
+	var prop := RigidBody2D.new()
+	prop.gravity_scale = 0.0
 	var shape := CollisionShape2D.new()
 	shape.shape = RectangleShape2D.new()
 	prop.add_child(shape)

@@ -20,6 +20,7 @@ var compartments: Array[Compartment] = []  # every compartment currently overlap
 var facing: int = 1                 # +1 right, -1 left
 var grabbed: bool = false
 var grab_normal: Vector2 = Vector2.ZERO
+var jumping: bool = false           # a floor jump is in progress; releasing jump cuts only that rise
 var fire_cooldown: float = 0.0
 
 @onready var swing: Swing = $Swing
@@ -76,4 +77,5 @@ func _on_swing_landed(target: Node2D, dir: Vector2) -> void:
 		velocity = -dir * KICK_SPEED # ricochet: pogo without a floor
 		grabbed = false
 	elif dir == Vector2.DOWN:
-		velocity.y = -JUMP_SPEED # pogo
+		velocity.y = -JUMP_SPEED # pogo: a full rise, whatever the jump button is doing
+		jumping = false

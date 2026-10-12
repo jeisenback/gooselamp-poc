@@ -66,3 +66,12 @@ func test_the_last_compartment_entered_rules_an_overlap() -> void:
 	await physics_frames(2)
 	assert_eq(p.compartments.size(), 2, "in both")
 	assert_true(p.in_zero_g(), "the dead room, entered last, rules")
+
+func test_rising_into_gravity_keeps_its_upward_speed() -> void:
+	var rooms := _two_rooms()
+	await physics_frames(1)
+	var p := spawn_player(Vector2(40, rooms.left.floor_y - 200))
+	p.velocity = Vector2(-300, -300)
+	await physics_frames(10)
+	assert_true(not p.in_zero_g(), "in the live room")
+	assert_true(p.velocity.y < -180.0, "still rising at nearly the speed it arrived with, got vy %f" % p.velocity.y)
