@@ -12,21 +12,21 @@ script = ExtResource("2")
 [node name="CollisionShape2D" parent="." index="0"]
 shape = SubResource("RectangleShape2D_1")
 
-[node name="Body" parent="." index="1"]
+[node name="Body" parent="Rig/Skeleton2D/Core" index="0"]
 polygon = PackedVector2Array(-50, -20, -30, -50, 30, -50, 50, -20, 50, 20, 30, 50, -30, 50, -50, 20)
 
-[node name="Lights" type="Polygon2D" parent="Body" index="0"]
+[node name="Lights" type="Polygon2D" parent="Rig/Skeleton2D/Core/Body"]
 color = Color(1, 0.95, 0.7, 1)
 polygon = PackedVector2Array(-34, -6, -28, -14, 28, -14, 34, -6, 34, 6, 28, 14, -28, 14, -34, 6, -26, 6, -22, 10, 22, 10, 26, 6, 26, -6, 22, -10, -22, -10, -26, -6)
 
 [node name="CollisionShape2D" parent="Hurt" index="0"]
 shape = SubResource("RectangleShape2D_1")
 
-[node name="Shards" parent="." index="3"]
+[node name="Shards" parent="." index="4"]
 amount = 24
 scale_amount_min = 6.0
 scale_amount_max = 10.0
 
-[node name="Down" type="RayCast2D" parent="." index="4"]
+[node name="Down" type="RayCast2D" parent="."]
 target_position = Vector2(0, 1000)
 collision_mask = 1

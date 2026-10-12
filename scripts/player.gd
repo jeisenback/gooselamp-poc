@@ -34,6 +34,7 @@ var fire_cooldown: float = 0.0
 
 @onready var swing: Swing = $Swing
 
+var _last_pose: String = ""
 var _gravity_mode := GravityMode.new()
 var _zero_g_mode := ZeroGMode.new()
 
@@ -47,11 +48,35 @@ func _physics_process(delta: float) -> void:
 	invulnerable_for = maxf(0.0, invulnerable_for - delta)
 	if dead:
 		_lie_there(delta)
-		return
-	if in_zero_g():
+	elif in_zero_g():
 		_zero_g_mode.step(self, input, delta)
 	else:
 		_gravity_mode.step(self, input, delta)
+	_update_pose()
+
+## The rig follows what the body is doing.
+func _update_pose() -> void:
+	var rig := get_node_or_null("Rig") as Rig
+	if rig == null:
+		return
+	rig.face(facing)
+	rig.tilt_into(velocity, in_zero_g())
+	var pose := "idle"
+	if dead:
+		pose = "death"
+	elif swing.is_active():
+		pose = "swing"
+	elif invulnerable_for > INVULNERABLE - 0.2:
+		pose = "hit"
+	elif in_zero_g():
+		pose = "idle" if grabbed else "jump"
+	elif not is_on_floor():
+		pose = "jump"
+	elif absf(velocity.x) > 1.0:
+		pose = "run"
+	if pose != _last_pose:
+		_last_pose = pose
+		rig.play(pose)
 
 ## Dead: no input. In gravity the body lands and stops; in zero-g it drifts.
 func _lie_there(delta: float) -> void:

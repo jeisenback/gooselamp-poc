@@ -6,10 +6,10 @@
 [node name="Clinger" instance=ExtResource("1")]
 script = ExtResource("2")
 
-[node name="Body" parent="." index="1"]
+[node name="Body" parent="Rig/Skeleton2D/Core" index="0"]
 polygon = PackedVector2Array(-16, 16, -14, 2, -8, -8, 8, -8, 14, 2, 16, 16)
 
-[node name="Mouth" type="Polygon2D" parent="Body" index="0"]
+[node name="Mouth" type="Polygon2D" parent="Rig/Skeleton2D/Core/Body"]
 position = Vector2(0, 2)
 color = Color(1, 0.95, 0.7, 1)
 polygon = PackedVector2Array(-5, -3, 5, -3, 3, 3, -3, 3)

@@ -86,7 +86,7 @@ func damage(amount: int, from: Vector2, stagger: bool) -> void:
 		velocity = Vector2.ZERO
 
 func _pose() -> void:
-	var body := get_node_or_null("Body") as Node2D
+	var body := find_child("Body", true, false) as Node2D
 	if body == null:
 		return
 	var size := 1.3 if state == State.WINDUP else 1.0

@@ -25,6 +25,6 @@ func behave(delta: float) -> void:
 		var old_normal := normal
 		normal = tangent()
 		global_position += (normal - old_normal) * RADIUS
-	var body := get_node_or_null("Body") as Node2D
+	var body := find_child("Body", true, false) as Node2D
 	if body != null:
 		body.rotation = normal.angle() + PI / 2.0

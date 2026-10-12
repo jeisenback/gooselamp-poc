@@ -118,6 +118,9 @@ func _floor_y() -> float:
 		return ray.get_collision_point().y
 	return NAN
 
+func pose_name() -> String:
+	return "swing" if state == State.CHARGE else "idle"
+
 ## Shots chip it but never stagger it; every hit resets the repair clock.
 func damage(amount: int, from: Vector2, _stagger: bool) -> void:
 	since_damage = 0.0

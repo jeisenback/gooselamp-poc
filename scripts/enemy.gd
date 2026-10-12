@@ -28,6 +28,9 @@ func _physics_process(delta: float) -> void:
 	if staggered_for <= 0.0:
 		behave(delta)
 	move_and_slide()
+	var rig := get_node_or_null("Rig") as Rig
+	if rig != null:
+		rig.play(pose_name())
 	var hurt := get_node_or_null("Hurt") as Area2D
 	if hurt != null:
 		for body in hurt.get_overlapping_bodies():
@@ -52,13 +55,16 @@ func damage(amount: int, from: Vector2, stagger: bool) -> void:
 	if stagger:
 		staggered_for = STAGGER
 	_flash()
+	var rig := get_node_or_null("Rig") as Rig
+	if rig != null:
+		rig.play("hit")
 	Sfx.play("hit")
 	if health <= 0:
 		die()
 
 ## The body goes white for the hit stop's frames.
 func _flash() -> void:
-	var body := get_node_or_null("Body") as CanvasItem
+	var body := find_child("Body", true, false) as CanvasItem
 	if body == null:
 		return
 	body.modulate = Color(8, 8, 8)
@@ -96,6 +102,10 @@ func nearest_player() -> Player:
 			best = node
 			best_distance = d
 	return best
+
+## The pose the rig shows this frame; types override it for their own.
+func pose_name() -> String:
+	return "idle"
 
 ## Overridden per type. Not called while staggered or dead.
 func behave(_delta: float) -> void:

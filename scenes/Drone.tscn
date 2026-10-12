@@ -6,14 +6,14 @@
 [node name="Drone" instance=ExtResource("1")]
 script = ExtResource("2")
 
-[node name="Body" parent="." index="1"]
+[node name="Body" parent="Rig/Skeleton2D/Core" index="0"]
 polygon = PackedVector2Array(-16, 0, -11, -11, 0, -16, 11, -11, 16, 0, 11, 11, 0, 16, -11, 11)
 
-[node name="Eye" type="Polygon2D" parent="Body" index="0"]
+[node name="Eye" type="Polygon2D" parent="Rig/Skeleton2D/Core/Body"]
 position = Vector2(6, -3)
 color = Color(1, 0.95, 0.7, 1)
 polygon = PackedVector2Array(-4, -4, 4, -4, 4, 4, -4, 4)
 
-[node name="Down" type="RayCast2D" parent="." index="4"]
+[node name="Down" type="RayCast2D" parent="."]
 target_position = Vector2(0, 600)
 collision_mask = 1

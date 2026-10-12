@@ -15,7 +15,7 @@ script = ExtResource("2")
 [node name="CollisionShape2D" parent="." index="0"]
 shape = SubResource("CircleShape2D_1")
 
-[node name="Body" parent="." index="1"]
+[node name="Body" parent="Rig/Skeleton2D/Core" index="0"]
 polygon = PackedVector2Array(-8, 0, -6, -5, -3, -7, 3, -7, 6, -5, 8, 0, 12, 3, 8, 2, 6, 6, 3, 4, 0, 8, -3, 4, -6, 6, -8, 2, -12, 3)
 
 [node name="CollisionShape2D" parent="Hurt" index="0"]
