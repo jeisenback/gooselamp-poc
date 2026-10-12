@@ -44,8 +44,8 @@ func _run() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
 	Sfx.stop_all()
 	OS.delay_msec(100)
-	await create_timer(1.3).timeout
-	await process_frame # the elapsed timer is dropped on the next frame, or it reads as leaked
+	for i in range(80):
+		await physics_frame
 	print("%d scenarios, %d failed; screenshots in playtest_out/" % [scenarios.size(), failed])
 	quit(1 if failed > 0 else 0)
 

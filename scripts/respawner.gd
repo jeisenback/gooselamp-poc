@@ -7,6 +7,7 @@ class_name Respawner extends Node
 
 var _player: Player = null
 var _lookup: Callable        # lookup(room_name) -> Checkpoint or null
+var _countdown: float = -1.0 # seconds until the respawn; negative when nobody is dead
 
 func bind(player: Player, checkpoint_lookup: Callable) -> void:
 	_player = player
@@ -14,7 +15,15 @@ func bind(player: Player, checkpoint_lookup: Callable) -> void:
 	player.died.connect(_on_died)
 
 func _on_died() -> void:
-	await get_tree().create_timer(Player.DEATH_DELAY, true, true).timeout
+	_countdown = Player.DEATH_DELAY
+
+func _physics_process(delta: float) -> void:
+	if _countdown < 0.0:
+		return
+	_countdown -= delta
+	if _countdown > 0.0:
+		return
+	_countdown = -1.0
 	if not is_instance_valid(_player):
 		return
 	var checkpoint: Checkpoint = _lookup.call(WorldState.checkpoint) if _lookup.is_valid() else null

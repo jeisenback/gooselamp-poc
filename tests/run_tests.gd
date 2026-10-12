@@ -3,6 +3,7 @@ extends SceneTree
 ## Headless test runner:
 ##   godot --headless --fixed-fps 60 -s tests/run_tests.gd
 ## Runs every test_* method in tests/test_*.gd and exits 1 on any failure.
+## TEST_FILTER=<substring> in the environment runs only the matching files.
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -17,6 +18,8 @@ func _run() -> void:
 	var file_seconds: Dictionary = {}
 	for file in DirAccess.get_files_at("res://tests"):
 		if not (file.begins_with("test_") and file.ends_with(".gd")):
+			continue
+		if OS.has_environment("TEST_FILTER") and not file.contains(OS.get_environment("TEST_FILTER")):
 			continue
 		var script: GDScript = load("res://tests/" + file)
 		if script == null or not script.can_instantiate():
@@ -61,8 +64,8 @@ func _run() -> void:
 	# those are reported leaked too.
 	Sfx.stop_all()
 	OS.delay_msec(100)
-	await create_timer(1.3).timeout
-	await process_frame # the elapsed timer is dropped on the next frame, or it reads as leaked
+	for i in range(80):
+		await physics_frame
 	_print_timings(timings, file_seconds)
 	print("%d passed, %d failed" % [passed, failed])
 	quit(1 if failed > 0 else 0)
