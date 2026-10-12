@@ -24,7 +24,17 @@ func add(node: Node) -> Node:
 	tree.root.add_child(node)
 	return node
 
+## Waits until exactly `count` physics ticks have processed since the call,
+## resuming at the start of the next tick (after the physics server has
+## flushed that tick's area and body signals, before nodes process). The
+## physics_frame signal fires before nodes process, so a call from outside a
+## tick first waits for the tick that is about to run; a call made inside a
+## tick (right after an earlier wait) is already on that cadence. Either way
+## an input set before the call is seen `count` times, and an edge input
+## cleared after it is seen exactly once per frame it was held.
 func physics_frames(count: int) -> void:
+	if not Engine.is_in_physics_frame():
+		await tree.physics_frame
 	for i in range(count):
 		await tree.physics_frame
 

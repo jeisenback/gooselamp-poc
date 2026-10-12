@@ -116,6 +116,8 @@ func fire(direction: Vector2) -> bool:
 		return false
 	fire_cooldown = FIRE_COOLDOWN
 	Sfx.play("shot")
+	if get_parent() != null:
+		Shot.spawn(get_parent(), self, global_position + direction * 24.0, direction, true)
 	fired.emit(direction)
 	return true
 
