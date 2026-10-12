@@ -55,8 +55,13 @@ func enter(room_name: String, exit_name: String) -> void:
 	else:
 		player.global_position = room.bounds().get_center()
 	player.velocity = velocity
-	player.tracker.compartments.clear()
 	player.grabbed = false
+	# Seed the compartment directly: the player is placed inside it, and
+	# whether the area reports the overlap is a platform detail (the web
+	# build never did for the first room, leaving the Dock in zero-g).
+	player.tracker.compartments.clear()
+	if room.compartment != null and room.bounds().has_point(player.global_position):
+		player.enter_compartment(room.compartment)
 	var b := room.bounds()
 	camera.limit_left = int(b.position.x)
 	camera.limit_top = int(b.position.y)

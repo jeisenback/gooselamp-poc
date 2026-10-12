@@ -45,6 +45,8 @@ jobs:
           mkdir -p build/web
           "$RUNNER_TEMP/godot" --headless --export-release "Web" build/web/index.html
           test -f build/web/index.wasm
+          # The pack must hold every room at full size (tests/check_pack.gd).
+          "$RUNNER_TEMP/godot" --headless --main-pack build/web/index.pck -s tests/check_pack.gd
 
       - uses: actions/upload-pages-artifact@v3
         with:

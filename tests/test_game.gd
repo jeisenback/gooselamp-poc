@@ -125,3 +125,9 @@ func test_every_gated_edge_is_shut_when_its_needs_fail() -> void:
 			assert_eq(g.room.room_name, e[0], "%s: stays in the room" % label)
 			assert_true(g.room.bounds().grow(-40.0).has_point(g.player.global_position), "%s: held well inside the room, at %s" % [label, g.player.global_position])
 			g.player.input_override.aim = Vector2.ZERO
+
+func test_entering_a_room_seeds_the_compartment_before_physics_runs() -> void:
+	var g := _game()
+	g.enter("Dock", "")
+	assert_eq(g.player.tracker.compartments.size(), 1, "inside the Dock's compartment at once, not a physics frame later")
+	assert_true(not g.player.in_zero_g(), "the Dock has gravity from the first frame")
