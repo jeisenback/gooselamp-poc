@@ -9,6 +9,7 @@ func _block(at: Vector2) -> StaticBody2D:
 	b.add_child(s)
 	b.position = at
 	b.add_to_group(Groups.HITTABLE)
+	b.add_to_group(Groups.BOUNCY)
 	return add(b) as StaticBody2D
 
 func test_swing_flips_a_switch_and_cannot_be_spammed() -> void:
@@ -65,3 +66,14 @@ func test_pogo_rises_like_a_jump_without_holding_jump() -> void:
 		await physics_frames(1)
 		top = minf(top, p.global_position.y)
 	assert_true(start_y - top > 80.0, "a pogo rises over 80 px with jump released, got %f" % (start_y - top))
+
+func test_a_switch_does_not_bounce_the_swing() -> void:
+	var r := make_room(false)
+	var p := spawn_player(Vector2(0, 0))
+	var s: Switch = add(load("res://scenes/Switch.tscn").instantiate())
+	s.position = Vector2(Swing.REACH + 10, 0)
+	p.input_override.aim = Vector2.RIGHT
+	p.input_override.swing_pressed = true
+	await physics_frames(2)
+	assert_true(not WorldState.ring_on, "the panel was hit")
+	assert_eq(p.velocity, Vector2.ZERO, "no ricochet off a panel, got %s" % p.velocity)

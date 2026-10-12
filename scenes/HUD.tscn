@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/hud.gd" id="1"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1")
+
+[node name="Pips" type="Node2D" parent="."]
+
+[node name="Pip1" type="Polygon2D" parent="Pips"]
+position = Vector2(24, 24)
+color = Color(0.95, 0.97, 1, 1)
+polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[node name="Pip2" type="Polygon2D" parent="Pips"]
+position = Vector2(52, 24)
+color = Color(0.95, 0.97, 1, 1)
+polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[node name="Pip3" type="Polygon2D" parent="Pips"]
+position = Vector2(80, 24)
+color = Color(0.95, 0.97, 1, 1)
+polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[node name="Pip4" type="Polygon2D" parent="Pips"]
+position = Vector2(108, 24)
+color = Color(0.95, 0.97, 1, 1)
+polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[node name="Pip5" type="Polygon2D" parent="Pips"]
+position = Vector2(136, 24)
+color = Color(0.95, 0.97, 1, 1)
+polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)

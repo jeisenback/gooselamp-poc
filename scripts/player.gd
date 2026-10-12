@@ -12,8 +12,14 @@ const JUMP_CUT_SPEED := 150.0       # releasing jump while rising caps upward sp
 const KICK_SPEED := RUN_SPEED * 1.4
 const RECOIL_SPEED := RUN_SPEED * 0.8
 const FIRE_COOLDOWN := 0.5
+const MAX_HEALTH := 5
+const INVULNERABLE := 0.6
+const KNOCKBACK_SPEED := 250.0
+const DEATH_DELAY := 1.0            # seconds the body lies there before whoever listens respawns it
 
 signal fired(direction: Vector2)    # Plan 2 spawns the projectile
+signal health_changed(health: int)
+signal died
 
 var input_override: PlayerInput = null   # tests set this; null polls real input
 var compartments: Array[Compartment] = []  # every compartment currently overlapping, last entered last
@@ -21,6 +27,9 @@ var facing: int = 1                 # +1 right, -1 left
 var grabbed: bool = false
 var grab_normal: Vector2 = Vector2.ZERO
 var jumping: bool = false           # a floor jump is in progress; releasing jump cuts only that rise
+var health: int = MAX_HEALTH
+var invulnerable_for: float = 0.0
+var dead: bool = false              # no input, no damage while true
 var fire_cooldown: float = 0.0
 
 @onready var swing: Swing = $Swing
@@ -34,10 +43,62 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	var input: PlayerInput = input_override if input_override != null else PlayerInput.poll()
 	fire_cooldown = maxf(0.0, fire_cooldown - delta)
+	invulnerable_for = maxf(0.0, invulnerable_for - delta)
+	if dead:
+		_lie_there(delta)
+		return
 	if in_zero_g():
 		_zero_g_mode.step(self, input, delta)
 	else:
 		_gravity_mode.step(self, input, delta)
+
+## Dead: no input. In gravity the body lands and stops; in zero-g it drifts.
+func _lie_there(delta: float) -> void:
+	if not in_zero_g():
+		motion_mode = CharacterBody2D.MOTION_MODE_GROUNDED
+		velocity.x = move_toward(velocity.x, 0.0, RUN_ACCEL * delta)
+		if not is_on_floor():
+			velocity.y += GRAVITY * delta
+	move_and_slide()
+
+## One health, knockback away from `from`, a short invulnerability. False
+## while invulnerable or dead. At zero health the player dies.
+func take_hit(from: Vector2) -> bool:
+	if dead or invulnerable_for > 0.0:
+		return false
+	health -= 1
+	invulnerable_for = INVULNERABLE
+	if in_zero_g():
+		velocity += (global_position - from).normalized() * KNOCKBACK_SPEED
+	else:
+		var side := signf(global_position.x - from.x)
+		if side == 0.0:
+			side = -facing
+		velocity = Vector2(side * KNOCKBACK_SPEED, -KNOCKBACK_SPEED * 0.6)
+	grabbed = false
+	health_changed.emit(health)
+	if health <= 0:
+		dead = true
+		Sfx.play("death")
+		died.emit()
+	else:
+		Sfx.play("hit")
+	return true
+
+func heal_full() -> void:
+	if health != MAX_HEALTH:
+		health = MAX_HEALTH
+		health_changed.emit(health)
+
+## Full health, alive, still, holding nothing, at `at`.
+func respawn(at: Vector2) -> void:
+	dead = false
+	invulnerable_for = 0.0
+	velocity = Vector2.ZERO
+	grabbed = false
+	jumping = false
+	global_position = at
+	heal_full()
 
 ## True when outside every compartment or when the last one entered has no gravity.
 func in_zero_g() -> bool:
@@ -73,6 +134,8 @@ func aim_for_swing(input: PlayerInput) -> Vector2:
 func _on_swing_landed(target: Node2D, dir: Vector2) -> void:
 	if target.has_method("hit"):
 		target.hit(self, dir)
+	if not target.is_in_group(Groups.BOUNCY):
+		return # panels and doors are hit, not bounced from
 	if in_zero_g():
 		velocity = -dir * KICK_SPEED # ricochet: pogo without a floor
 		grabbed = false
