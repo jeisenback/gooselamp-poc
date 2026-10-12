@@ -20,10 +20,10 @@ static func spawn(parent: Node, shooter_node: Node2D, at: Vector2, dir: Vector2,
 	shot.shooter = shooter_node
 	shot.direction = dir.normalized() if dir != Vector2.ZERO else Vector2.RIGHT
 	shot.from_player = player_shot
-	shot.position = at
 	shot.rotation = shot.direction.angle()
 	shot._life = LIFETIME if player_shot else ENEMY_LIFETIME
 	parent.add_child(shot)
+	shot.global_position = at # `at` is a world position, whatever the parent's own is
 	return shot
 
 func _ready() -> void:

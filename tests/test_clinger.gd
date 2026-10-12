@@ -34,3 +34,16 @@ func test_keeps_shooting_while_drifting() -> void:
 	var p := spawn_player(Vector2(200, 0))
 	await physics_frames(frame_count(Clinger.PERIOD + 0.2))
 	assert_true(_shots().size() >= 1 or p.health < Player.MAX_HEALTH, "shot while moving")
+
+func test_a_clinger_under_a_spawner_shoots_from_where_it_is() -> void:
+	var r := make_room(true)
+	var s: Spawner = load("res://scenes/Spawner.tscn").instantiate()
+	s.scene = load("res://scenes/Clinger.tscn")
+	s.position = Vector2(300, r.floor_y - 16)
+	add(s)
+	var p := spawn_player(Vector2(0, r.floor_y - 30))
+	await physics_frames(frame_count(Clinger.PERIOD + 0.2))
+	var shots := tree.root.find_children("*", "Shot", true, false)
+	assert_eq(shots.size(), 1, "one shot in flight")
+	if shots.size() == 1:
+		assert_true(shots[0].global_position.distance_to(s.global_position) < 100.0, "fired from the clinger, not offset by the spawner, got %s" % shots[0].global_position)
