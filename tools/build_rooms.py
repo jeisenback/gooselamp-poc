@@ -40,7 +40,7 @@ class Room:
         self.art = []
         self.state = {}    # container -> list of (kind, data)
         self.floor_segments = None  # None: full floor; else list of (x0, x1)
-        self.room_script_name = "room.gd"
+        self.room_script = "res://scripts/room.gd"
         self.sub_ids = 0
 
     def res(self, path, kind="PackedScene"):
@@ -81,6 +81,26 @@ class Room:
         for k, v in (props or {}).items():
             s += "%s = %s\n" % (k, v)
         self.nodes.append(s + "\n" + extra_nodes)
+
+    def node(self, text):
+        """Raw node text, appended after the exits."""
+        self.nodes.append(text if text.endswith("\n\n") else text + "\n\n")
+
+    def ring_backdrop(self, centre, radius):
+        """A Node2D named Ring of spokes and rim segments, turned by blister.gd."""
+        t = '[node name="Ring" type="Node2D" parent="."]\nposition = Vector2(%s)\n\n' % f(centre)
+        for i in range(8):
+            a = i * math.pi / 4
+            ca, sa = math.cos(a), math.sin(a)
+            inner, outer, hw = radius * 0.55, radius, 6
+            pts = [(inner * ca - hw * sa, inner * sa + hw * ca), (outer * ca - hw * sa, outer * sa + hw * ca), (outer * ca + hw * sa, outer * sa - hw * ca), (inner * ca + hw * sa, inner * sa - hw * ca)]
+            t += '[node name="Spoke%d" type="Polygon2D" parent="Ring"]\ncolor = %s\npolygon = PackedVector2Array(%s)\n\n' % (i, SCENERY, f([c for p in pts for c in p]))
+        for i in range(24):
+            a0, a1 = i * math.pi / 12, (i + 0.8) * math.pi / 12
+            r0, r1 = radius, radius + 26
+            pts = [(r0 * math.cos(a0), r0 * math.sin(a0)), (r1 * math.cos(a0), r1 * math.sin(a0)), (r1 * math.cos(a1), r1 * math.sin(a1)), (r0 * math.cos(a1), r0 * math.sin(a1))]
+            t += '[node name="Rim%d" type="Polygon2D" parent="Ring"]\ncolor = %s\npolygon = PackedVector2Array(%s)\n\n' % (i, SCENERY, f([c for p in pts for c in p]))
+        self.node(t)
 
     def checkpoint(self, pos, room_name):
         self.instance("Airlock", "res://scenes/Checkpoint.tscn", props={"position": "Vector2(%s)" % f(pos), "room_name": '"%s"' % room_name})
@@ -153,7 +173,7 @@ class Room:
 
     def write(self):
         n = []
-        n.append('[node name="%s" type="Node2D"]\nscript = %s\nroom_name = "%s"\nfloor_y = %s\n\n' % (self.name.replace(" ", ""), self.res("res://scripts/room.gd", "Script"), self.name, f(self.floor_y)))
+        n.append('[node name="%s" type="Node2D"]\nscript = %s\nroom_name = "%s"\nfloor_y = %s\n\n' % (self.name.replace(" ", ""), self.res(self.room_script, "Script"), self.name, f(self.floor_y)))
         # background
         if not self.plates_live:
             n.append('[node name="Sky" type="Polygon2D" parent="."]\ncolor = Color(0.01, 0.01, 0.02, 1)\npolygon = PackedVector2Array(%s)\n\n' % f([c for p in self.rect_pts(0, 0, self.w, self.h) for c in p]))
@@ -220,7 +240,55 @@ def breach():
         r.spawner("MiteSpawner%d" % i, "Mite", (x + w / 2, y - 8))
     r.write()
 
+def blister():
+    r = Room("Blister", (1, 1), False)
+    r.room_script = "res://scripts/blister.gd"
+    r.exit("east", "right", 324)
+    r.ring_backdrop((576, 324), 230)
+    r.switch("Panel2", "ring", (44, 324))
+    r.block(32, 280, 24, 88, color=SCENERY, name="PanelMount")  # a ledge beside the panel to grab
+    r.spawner("DroneSpawner", "Drone", (700, 200))
+    r.write()
+
+def spine_west():
+    r = Room("Spine West", (2, 1), True)
+    fy = r.floor_y
+    r.exit("west", "left")
+    r.exit("up", "top", 576)
+    r.exit("east", "right", fy - 230)          # Spine East's floor is higher: a drop from there, flight from here
+    # the fallen gate: solid floor to 200 px up with the ring on, floating clear with it off
+    r.state_block("RingOn", "Gate", 2200, fy - 200, 72, 200, color=SCENERY)
+    r.state_block("RingOff", "GateAdrift", 2140, 60, 200, 60, color=SCENERY, collide=False)
+    r.spawner("MiteSpawner1", "Mite", (700, fy - 8))
+    r.spawner("MiteSpawner2", "Mite", (1500, fy - 8))
+    r.spawner("DroneSpawner", "Drone", (1200, 400))
+    r.write()
+
+def shaft():
+    r = Room("Shaft", (1, 2), True)
+    r.exit("down", "bottom", 576)
+    r.exit("up", "top", 576)
+    # grab ledges on both walls every 150 px, mites on four of them
+    ledges = []
+    y = 200
+    side = 0
+    while y < r.h - 150:
+        x = T if side == 0 else r.w - T - 60
+        r.block(x, y, 60, 24, color=SCENERY)
+        ledges.append((x + 30, y - 8))
+        y += 150
+        side = 1 - side
+    for i, pos in enumerate(ledges[1:5]):
+        r.spawner("MiteSpawner%d" % i, "Mite", pos)
+    # the pressure door across the top opening: sealed with the vents closed, slid aside when open
+    r.state_block("VentsClosed", "PressureDoor", 496, T, 160, 32, color=SCENERY)
+    r.state_block("VentsOpen", "PressureDoorOpen", 656, T, 160, 32, color=SCENERY, collide=False)
+    r.write()
+
 if __name__ == "__main__":
     dock()
     breach()
+    blister()
+    spine_west()
+    shaft()
     print("rooms written")

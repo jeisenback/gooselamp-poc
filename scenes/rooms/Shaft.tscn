@@ -1,0 +1,239 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/Mite.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/Spawner.tscn" id="2"]
+[ext_resource type="Script" path="res://scripts/room.gd" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/Compartment.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/Exit.tscn" id="5"]
+
+[sub_resource type="RectangleShape2D" id="sub_1"]
+size = Vector2(32.0, 1296.0)
+
+[sub_resource type="RectangleShape2D" id="sub_2"]
+size = Vector2(32.0, 1296.0)
+
+[sub_resource type="RectangleShape2D" id="sub_3"]
+size = Vector2(496.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="sub_4"]
+size = Vector2(496.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="sub_5"]
+size = Vector2(496.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="sub_6"]
+size = Vector2(496.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="sub_7"]
+size = Vector2(60.0, 24.0)
+
+[sub_resource type="RectangleShape2D" id="sub_8"]
+size = Vector2(60.0, 24.0)
+
+[sub_resource type="RectangleShape2D" id="sub_9"]
+size = Vector2(60.0, 24.0)
+
+[sub_resource type="RectangleShape2D" id="sub_10"]
+size = Vector2(60.0, 24.0)
+
+[sub_resource type="RectangleShape2D" id="sub_11"]
+size = Vector2(60.0, 24.0)
+
+[sub_resource type="RectangleShape2D" id="sub_12"]
+size = Vector2(60.0, 24.0)
+
+[sub_resource type="RectangleShape2D" id="sub_13"]
+size = Vector2(60.0, 24.0)
+
+[sub_resource type="RectangleShape2D" id="sub_14"]
+size = Vector2(1152.0, 1296.0)
+
+[sub_resource type="RectangleShape2D" id="sub_15"]
+size = Vector2(160.0, 32.0)
+
+
+[node name="Shaft" type="Node2D"]
+script = ExtResource("3")
+room_name = "Shaft"
+floor_y = 1264.0
+
+[node name="Hull" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Wall0" type="CollisionShape2D" parent="Hull"]
+position = Vector2(16.0, 648.0)
+shape = SubResource("sub_1")
+
+[node name="WallArt0" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(0, 0.0, 32, 0.0, 32, 1296.0, 0, 1296.0)
+
+[node name="Wall1" type="CollisionShape2D" parent="Hull"]
+position = Vector2(1136.0, 648.0)
+shape = SubResource("sub_2")
+
+[node name="WallArt1" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(1120, 0.0, 1152, 0.0, 1152, 1296.0, 1120, 1296.0)
+
+[node name="Wall2" type="CollisionShape2D" parent="Hull"]
+position = Vector2(248.0, 16.0)
+shape = SubResource("sub_3")
+
+[node name="WallArt2" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(0.0, 0, 496.0, 0, 496.0, 32, 0.0, 32)
+
+[node name="Wall3" type="CollisionShape2D" parent="Hull"]
+position = Vector2(904.0, 16.0)
+shape = SubResource("sub_4")
+
+[node name="WallArt3" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(656, 0, 1152, 0, 1152, 32, 656, 32)
+
+[node name="Wall4" type="CollisionShape2D" parent="Hull"]
+position = Vector2(248.0, 1280.0)
+shape = SubResource("sub_5")
+
+[node name="WallArt4" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(0.0, 1264, 496.0, 1264, 496.0, 1296, 0.0, 1296)
+
+[node name="Wall5" type="CollisionShape2D" parent="Hull"]
+position = Vector2(904.0, 1280.0)
+shape = SubResource("sub_6")
+
+[node name="WallArt5" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(656, 1264, 1152, 1264, 1152, 1296, 656, 1296)
+
+[node name="Wall6" type="CollisionShape2D" parent="Hull"]
+position = Vector2(62.0, 212.0)
+shape = SubResource("sub_7")
+
+[node name="WallArt6" type="Polygon2D" parent="Hull"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(32, 200, 92, 200, 92, 224, 32, 224)
+
+[node name="Wall7" type="CollisionShape2D" parent="Hull"]
+position = Vector2(1090.0, 362.0)
+shape = SubResource("sub_8")
+
+[node name="WallArt7" type="Polygon2D" parent="Hull"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(1060, 350, 1120, 350, 1120, 374, 1060, 374)
+
+[node name="Wall8" type="CollisionShape2D" parent="Hull"]
+position = Vector2(62.0, 512.0)
+shape = SubResource("sub_9")
+
+[node name="WallArt8" type="Polygon2D" parent="Hull"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(32, 500, 92, 500, 92, 524, 32, 524)
+
+[node name="Wall9" type="CollisionShape2D" parent="Hull"]
+position = Vector2(1090.0, 662.0)
+shape = SubResource("sub_10")
+
+[node name="WallArt9" type="Polygon2D" parent="Hull"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(1060, 650, 1120, 650, 1120, 674, 1060, 674)
+
+[node name="Wall10" type="CollisionShape2D" parent="Hull"]
+position = Vector2(62.0, 812.0)
+shape = SubResource("sub_11")
+
+[node name="WallArt10" type="Polygon2D" parent="Hull"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(32, 800, 92, 800, 92, 824, 32, 824)
+
+[node name="Wall11" type="CollisionShape2D" parent="Hull"]
+position = Vector2(1090.0, 962.0)
+shape = SubResource("sub_12")
+
+[node name="WallArt11" type="Polygon2D" parent="Hull"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(1060, 950, 1120, 950, 1120, 974, 1060, 974)
+
+[node name="Wall12" type="CollisionShape2D" parent="Hull"]
+position = Vector2(62.0, 1112.0)
+shape = SubResource("sub_13")
+
+[node name="WallArt12" type="Polygon2D" parent="Hull"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(32, 1100, 92, 1100, 92, 1124, 32, 1124)
+
+[node name="PlateArt" type="Polygon2D" parent="Hull"]
+color = Color(0.22, 0.19, 0.14, 1)
+polygon = PackedVector2Array(32, 1264.0, 1120, 1264.0, 1120, 1270.0, 32, 1270.0)
+
+[node name="Compartment" parent="." instance=ExtResource("4")]
+position = Vector2(576.0, 648.0)
+plates_live = true
+room_name = "Shaft"
+
+[node name="Bounds" parent="Compartment" index="0"]
+shape = SubResource("sub_14")
+
+[node name="Tint" type="Polygon2D" parent="Compartment"]
+color = Color(1, 0.72, 0.4, 0.1)
+polygon = PackedVector2Array(-576.0, -648.0, 576.0, -648.0, 576.0, 648.0, -576.0, 648.0)
+
+[node name="VentsClosed" type="Node2D" parent="Compartment"]
+position = Vector2(-576.0, -648.0)
+
+[node name="PressureDoor" type="StaticBody2D" parent="Compartment/VentsClosed"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Shape" type="CollisionShape2D" parent="Compartment/VentsClosed/PressureDoor"]
+position = Vector2(576.0, 48.0)
+shape = SubResource("sub_15")
+
+[node name="Art" type="Polygon2D" parent="Compartment/VentsClosed/PressureDoor"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(496, 32, 656, 32, 656, 64, 496, 64)
+
+[node name="VentsOpen" type="Node2D" parent="Compartment"]
+position = Vector2(-576.0, -648.0)
+
+[node name="PressureDoorOpen" type="StaticBody2D" parent="Compartment/VentsOpen"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Art" type="Polygon2D" parent="Compartment/VentsOpen/PressureDoorOpen"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(656, 32, 816, 32, 816, 64, 656, 64)
+
+[node name="Exits" type="Node2D" parent="."]
+
+[node name="down" parent="Exits" instance=ExtResource("5")]
+position = Vector2(576.0, 1280.0)
+rotation = 1.571
+exit_name = "down"
+inward = Vector2(0, -1)
+
+[node name="up" parent="Exits" instance=ExtResource("5")]
+position = Vector2(576.0, 16.0)
+rotation = 1.571
+exit_name = "up"
+inward = Vector2(0, 1)
+
+[node name="MiteSpawner0" parent="." instance=ExtResource("2")]
+position = Vector2(1090, 342)
+scene = ExtResource("1")
+
+[node name="MiteSpawner1" parent="." instance=ExtResource("2")]
+position = Vector2(62, 492)
+scene = ExtResource("1")
+
+[node name="MiteSpawner2" parent="." instance=ExtResource("2")]
+position = Vector2(1090, 642)
+scene = ExtResource("1")
+
+[node name="MiteSpawner3" parent="." instance=ExtResource("2")]
+position = Vector2(62, 792)
+scene = ExtResource("1")
+
