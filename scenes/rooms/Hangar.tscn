@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3]
+[gd_scene load_steps=27 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/Vent.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/Hazard.tscn" id="2"]
@@ -12,51 +12,57 @@
 size = Vector2(1088.0, 1880.0)
 
 [sub_resource type="RectangleShape2D" id="sub_2"]
-size = Vector2(28.0, 140.0)
+size = Vector2(28.0, 180.0)
 
 [sub_resource type="RectangleShape2D" id="sub_3"]
-size = Vector2(28.0, 140.0)
+size = Vector2(28.0, 180.0)
 
 [sub_resource type="RectangleShape2D" id="sub_4"]
-size = Vector2(28.0, 140.0)
+size = Vector2(28.0, 180.0)
 
 [sub_resource type="RectangleShape2D" id="sub_5"]
-size = Vector2(28.0, 140.0)
+size = Vector2(28.0, 180.0)
 
 [sub_resource type="RectangleShape2D" id="sub_6"]
-size = Vector2(28.0, 140.0)
+size = Vector2(28.0, 180.0)
 
 [sub_resource type="RectangleShape2D" id="sub_7"]
-size = Vector2(28.0, 140.0)
+size = Vector2(28.0, 180.0)
 
 [sub_resource type="RectangleShape2D" id="sub_8"]
-size = Vector2(32.0, 1776.0)
+size = Vector2(28.0, 180.0)
 
 [sub_resource type="RectangleShape2D" id="sub_9"]
-size = Vector2(32.0, 32.0)
+size = Vector2(28.0, 180.0)
 
 [sub_resource type="RectangleShape2D" id="sub_10"]
-size = Vector2(32.0, 1944.0)
+size = Vector2(32.0, 1776.0)
 
 [sub_resource type="RectangleShape2D" id="sub_11"]
-size = Vector2(496.0, 32.0)
+size = Vector2(32.0, 32.0)
 
 [sub_resource type="RectangleShape2D" id="sub_12"]
-size = Vector2(496.0, 32.0)
+size = Vector2(32.0, 1944.0)
 
 [sub_resource type="RectangleShape2D" id="sub_13"]
-size = Vector2(1152.0, 32.0)
+size = Vector2(496.0, 32.0)
 
 [sub_resource type="RectangleShape2D" id="sub_14"]
-size = Vector2(60.0, 24.0)
+size = Vector2(496.0, 32.0)
 
 [sub_resource type="RectangleShape2D" id="sub_15"]
-size = Vector2(60.0, 24.0)
+size = Vector2(1152.0, 32.0)
 
 [sub_resource type="RectangleShape2D" id="sub_16"]
-size = Vector2(1152.0, 1944.0)
+size = Vector2(60.0, 24.0)
 
 [sub_resource type="RectangleShape2D" id="sub_17"]
+size = Vector2(60.0, 24.0)
+
+[sub_resource type="RectangleShape2D" id="sub_18"]
+size = Vector2(1152.0, 1944.0)
+
+[sub_resource type="RectangleShape2D" id="sub_19"]
 size = Vector2(32.0, 136.0)
 
 
@@ -71,7 +77,7 @@ collision_mask = 0
 
 [node name="Wall0" type="CollisionShape2D" parent="Hull"]
 position = Vector2(16.0, 888.0)
-shape = SubResource("sub_8")
+shape = SubResource("sub_10")
 
 [node name="WallArt0" type="Polygon2D" parent="Hull"]
 color = Color(0.1, 0.11, 0.13, 1)
@@ -79,7 +85,7 @@ polygon = PackedVector2Array(0, 0.0, 32, 0.0, 32, 1776.0, 0, 1776.0)
 
 [node name="Wall1" type="CollisionShape2D" parent="Hull"]
 position = Vector2(16.0, 1928.0)
-shape = SubResource("sub_9")
+shape = SubResource("sub_11")
 
 [node name="WallArt1" type="Polygon2D" parent="Hull"]
 color = Color(0.1, 0.11, 0.13, 1)
@@ -87,7 +93,7 @@ polygon = PackedVector2Array(0, 1912.0, 32, 1912.0, 32, 1944.0, 0, 1944.0)
 
 [node name="Wall2" type="CollisionShape2D" parent="Hull"]
 position = Vector2(1136.0, 972.0)
-shape = SubResource("sub_10")
+shape = SubResource("sub_12")
 
 [node name="WallArt2" type="Polygon2D" parent="Hull"]
 color = Color(0.1, 0.11, 0.13, 1)
@@ -95,7 +101,7 @@ polygon = PackedVector2Array(1120, 0.0, 1152, 0.0, 1152, 1944.0, 1120, 1944.0)
 
 [node name="Wall3" type="CollisionShape2D" parent="Hull"]
 position = Vector2(248.0, 16.0)
-shape = SubResource("sub_11")
+shape = SubResource("sub_13")
 
 [node name="WallArt3" type="Polygon2D" parent="Hull"]
 color = Color(0.1, 0.11, 0.13, 1)
@@ -103,7 +109,7 @@ polygon = PackedVector2Array(0.0, 0, 496.0, 0, 496.0, 32, 0.0, 32)
 
 [node name="Wall4" type="CollisionShape2D" parent="Hull"]
 position = Vector2(904.0, 16.0)
-shape = SubResource("sub_12")
+shape = SubResource("sub_14")
 
 [node name="WallArt4" type="Polygon2D" parent="Hull"]
 color = Color(0.1, 0.11, 0.13, 1)
@@ -111,7 +117,7 @@ polygon = PackedVector2Array(656, 0, 1152, 0, 1152, 32, 656, 32)
 
 [node name="Wall5" type="CollisionShape2D" parent="Hull"]
 position = Vector2(576.0, 1928.0)
-shape = SubResource("sub_13")
+shape = SubResource("sub_15")
 
 [node name="WallArt5" type="Polygon2D" parent="Hull"]
 color = Color(0.1, 0.11, 0.13, 1)
@@ -119,7 +125,7 @@ polygon = PackedVector2Array(0.0, 1912, 1152.0, 1912, 1152.0, 1944, 0.0, 1944)
 
 [node name="Wall6" type="CollisionShape2D" parent="Hull"]
 position = Vector2(62.0, 812.0)
-shape = SubResource("sub_14")
+shape = SubResource("sub_16")
 
 [node name="WallArt6" type="Polygon2D" parent="Hull"]
 color = Color(0.16, 0.17, 0.2, 1)
@@ -127,7 +133,7 @@ polygon = PackedVector2Array(32, 800, 92, 800, 92, 824, 32, 824)
 
 [node name="Wall7" type="CollisionShape2D" parent="Hull"]
 position = Vector2(62.0, 1412.0)
-shape = SubResource("sub_15")
+shape = SubResource("sub_17")
 
 [node name="WallArt7" type="Polygon2D" parent="Hull"]
 color = Color(0.16, 0.17, 0.2, 1)
@@ -143,7 +149,7 @@ plates_live = true
 room_name = "Hangar"
 
 [node name="Bounds" parent="Compartment" index="0"]
-shape = SubResource("sub_16")
+shape = SubResource("sub_18")
 
 [node name="Tint" type="Polygon2D" parent="Compartment"]
 color = Color(1, 0.72, 0.4, 0.1)
@@ -158,7 +164,7 @@ collision_mask = 0
 
 [node name="Shape" type="CollisionShape2D" parent="Compartment/VentsClosed/Hatch"]
 position = Vector2(16.0, 1844.0)
-shape = SubResource("sub_17")
+shape = SubResource("sub_19")
 
 [node name="Art" type="Polygon2D" parent="Compartment/VentsClosed/Hatch"]
 color = Color(0.16, 0.17, 0.2, 1)
@@ -200,7 +206,7 @@ shape = SubResource("sub_1")
 emission_rect_extents = Vector2(544.0, 940.0)
 
 [node name="Shred0" parent="." instance=ExtResource("2")]
-position = Vector2(1106, 240)
+position = Vector2(1106, 140)
 
 [node name="CollisionShape2D" parent="Shred0" index="0"]
 shape = SubResource("sub_2")
@@ -209,10 +215,10 @@ shape = SubResource("sub_2")
 shape = SubResource("sub_2")
 
 [node name="Spikes" parent="Shred0" index="1"]
-polygon = PackedVector2Array(-14.0, 70.0, -7.0, -70.0, 0.0, 70.0, 7.0, -70.0, 14.0, 70.0)
+polygon = PackedVector2Array(-14.0, 90.0, -7.0, -90.0, 0.0, 90.0, 7.0, -90.0, 14.0, 90.0)
 
 [node name="Shred1" parent="." instance=ExtResource("2")]
-position = Vector2(1106, 500)
+position = Vector2(1106, 360)
 
 [node name="CollisionShape2D" parent="Shred1" index="0"]
 shape = SubResource("sub_3")
@@ -221,10 +227,10 @@ shape = SubResource("sub_3")
 shape = SubResource("sub_3")
 
 [node name="Spikes" parent="Shred1" index="1"]
-polygon = PackedVector2Array(-14.0, 70.0, -7.0, -70.0, 0.0, 70.0, 7.0, -70.0, 14.0, 70.0)
+polygon = PackedVector2Array(-14.0, 90.0, -7.0, -90.0, 0.0, 90.0, 7.0, -90.0, 14.0, 90.0)
 
 [node name="Shred2" parent="." instance=ExtResource("2")]
-position = Vector2(1106, 760)
+position = Vector2(1106, 580)
 
 [node name="CollisionShape2D" parent="Shred2" index="0"]
 shape = SubResource("sub_4")
@@ -233,10 +239,10 @@ shape = SubResource("sub_4")
 shape = SubResource("sub_4")
 
 [node name="Spikes" parent="Shred2" index="1"]
-polygon = PackedVector2Array(-14.0, 70.0, -7.0, -70.0, 0.0, 70.0, 7.0, -70.0, 14.0, 70.0)
+polygon = PackedVector2Array(-14.0, 90.0, -7.0, -90.0, 0.0, 90.0, 7.0, -90.0, 14.0, 90.0)
 
 [node name="Shred3" parent="." instance=ExtResource("2")]
-position = Vector2(1106, 1020)
+position = Vector2(1106, 800)
 
 [node name="CollisionShape2D" parent="Shred3" index="0"]
 shape = SubResource("sub_5")
@@ -245,10 +251,10 @@ shape = SubResource("sub_5")
 shape = SubResource("sub_5")
 
 [node name="Spikes" parent="Shred3" index="1"]
-polygon = PackedVector2Array(-14.0, 70.0, -7.0, -70.0, 0.0, 70.0, 7.0, -70.0, 14.0, 70.0)
+polygon = PackedVector2Array(-14.0, 90.0, -7.0, -90.0, 0.0, 90.0, 7.0, -90.0, 14.0, 90.0)
 
 [node name="Shred4" parent="." instance=ExtResource("2")]
-position = Vector2(1106, 1280)
+position = Vector2(1106, 1020)
 
 [node name="CollisionShape2D" parent="Shred4" index="0"]
 shape = SubResource("sub_6")
@@ -257,10 +263,10 @@ shape = SubResource("sub_6")
 shape = SubResource("sub_6")
 
 [node name="Spikes" parent="Shred4" index="1"]
-polygon = PackedVector2Array(-14.0, 70.0, -7.0, -70.0, 0.0, 70.0, 7.0, -70.0, 14.0, 70.0)
+polygon = PackedVector2Array(-14.0, 90.0, -7.0, -90.0, 0.0, 90.0, 7.0, -90.0, 14.0, 90.0)
 
 [node name="Shred5" parent="." instance=ExtResource("2")]
-position = Vector2(1106, 1540)
+position = Vector2(1106, 1240)
 
 [node name="CollisionShape2D" parent="Shred5" index="0"]
 shape = SubResource("sub_7")
@@ -269,7 +275,31 @@ shape = SubResource("sub_7")
 shape = SubResource("sub_7")
 
 [node name="Spikes" parent="Shred5" index="1"]
-polygon = PackedVector2Array(-14.0, 70.0, -7.0, -70.0, 0.0, 70.0, 7.0, -70.0, 14.0, 70.0)
+polygon = PackedVector2Array(-14.0, 90.0, -7.0, -90.0, 0.0, 90.0, 7.0, -90.0, 14.0, 90.0)
+
+[node name="Shred6" parent="." instance=ExtResource("2")]
+position = Vector2(1106, 1460)
+
+[node name="CollisionShape2D" parent="Shred6" index="0"]
+shape = SubResource("sub_8")
+
+[node name="CollisionShape2D" parent="Shred6/Hurt" index="0"]
+shape = SubResource("sub_8")
+
+[node name="Spikes" parent="Shred6" index="1"]
+polygon = PackedVector2Array(-14.0, 90.0, -7.0, -90.0, 0.0, 90.0, 7.0, -90.0, 14.0, 90.0)
+
+[node name="Shred7" parent="." instance=ExtResource("2")]
+position = Vector2(1106, 1680)
+
+[node name="CollisionShape2D" parent="Shred7" index="0"]
+shape = SubResource("sub_9")
+
+[node name="CollisionShape2D" parent="Shred7/Hurt" index="0"]
+shape = SubResource("sub_9")
+
+[node name="Spikes" parent="Shred7" index="1"]
+polygon = PackedVector2Array(-14.0, 90.0, -7.0, -90.0, 0.0, 90.0, 7.0, -90.0, 14.0, 90.0)
 
 [node name="MiteSpawner0" parent="." instance=ExtResource("4")]
 position = Vector2(62, 792)

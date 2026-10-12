@@ -351,11 +351,11 @@ def hangar():
     r.state_block("VentsOpen", "HatchOpen", 0, fy - 136 - 140, T, 136, color=SCENERY, collide=False)
     # the gale blows east into a shredded hull wall
     r.vent("Vent", (576, r.h / 2), (1088, r.h - 2 * T), (1, 0))
-    y = 240
+    y = 140
     i = 0
-    while y < fy - 200:
-        r.hazard("Shred%d" % i, (r.w - T - 14, y), size=(28, 140))
-        y += 260
+    while y < fy - 120:
+        r.hazard("Shred%d" % i, (r.w - T - 14, y), size=(28, 180))
+        y += 220
         i += 1
     for j, y in enumerate([800, 1400]):
         r.block(T, y, 60, 24, color=SCENERY)
