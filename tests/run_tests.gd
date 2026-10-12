@@ -57,6 +57,7 @@ func _run() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TestCase.TEST_SAVE_PATH))
 	# Let the audio thread release stopped sounds before quitting, or Godot
 	# reports their playbacks as leaked at exit.
+	Sfx.stop_all()
 	OS.delay_msec(100)
 	await process_frame
 	_print_timings(timings, file_seconds)

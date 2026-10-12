@@ -13,7 +13,10 @@ const RESET: Array = [
 ]
 
 ## Static variables that are deliberately left alone, and why.
-const EXPLAINED: Dictionary = {}
+const EXPLAINED: Dictionary = {
+	"Sfx._pool": "the audio player pool, created on demand and reused",
+	"Sfx._lp_state": "filter state inside one sound's synthesis",
+}
 
 ## `save_path` is where WorldState saves while the test runs (never the player's real save).
 static func reset(save_path: String = "") -> void:

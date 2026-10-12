@@ -14,6 +14,7 @@ func step(p: Player, input: PlayerInput, delta: float) -> void:
 		var dir := input.aim if input.aim != Vector2.ZERO else p.grab_normal
 		p.velocity = dir * Player.KICK_SPEED
 		p.grabbed = false
+		Sfx.play("kick")
 	if input.swing_pressed:
 		p.swing.start(p.aim_for_swing(input))
 	if input.fire_pressed:
@@ -32,6 +33,8 @@ func step(p: Player, input: PlayerInput, delta: float) -> void:
 		if p.velocity.dot(normal) < 0.0:
 			p.velocity = p.velocity.slide(normal)
 	if input.grab_held and p.get_slide_collision_count() > 0:
+		if not p.grabbed:
+			Sfx.play("grab")
 		p.grabbed = true
 		p.grab_normal = p.get_slide_collision(0).get_normal()
 		p.velocity = Vector2.ZERO

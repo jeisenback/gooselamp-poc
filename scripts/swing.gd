@@ -29,6 +29,7 @@ func start(dir: Vector2) -> bool:
 	_timer = ACTIVE + RECOVERY
 	_hit.clear()
 	monitoring = true
+	Sfx.play("swing")
 	return true
 
 func is_busy() -> bool:

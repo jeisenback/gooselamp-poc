@@ -26,6 +26,9 @@ func hit(_from: Node2D, _direction: Vector2) -> void:
 		return
 	_rehit = REHIT_DELAY
 	WorldState.flip(switch_name)
+	Sfx.play("switch")
+	if switch_name == "ring" and not WorldState.ring_on:
+		Sfx.play("ring_down")
 	_refresh()
 
 func _refresh() -> void:

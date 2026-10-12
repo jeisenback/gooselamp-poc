@@ -54,6 +54,7 @@ func fire(direction: Vector2) -> bool:
 	if fire_cooldown > 0.0:
 		return false
 	fire_cooldown = FIRE_COOLDOWN
+	Sfx.play("shot")
 	fired.emit(direction)
 	return true
 
