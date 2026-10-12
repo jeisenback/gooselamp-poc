@@ -51,9 +51,20 @@ func damage(amount: int, from: Vector2, stagger: bool) -> void:
 	velocity = (global_position - from).normalized() * KNOCKBACK
 	if stagger:
 		staggered_for = STAGGER
+	_flash()
 	Sfx.play("hit")
 	if health <= 0:
 		die()
+
+## The body goes white for the hit stop's frames.
+func _flash() -> void:
+	var body := get_node_or_null("Body") as CanvasItem
+	if body == null:
+		return
+	body.modulate = Color(8, 8, 8)
+	var tween := body.create_tween() # bound to the body: dies with it, waits out a hit stop
+	tween.tween_interval(HitStop.FRAMES / 60.0)
+	tween.tween_property(body, "modulate", Color.WHITE, 0.0)
 
 ## The swing.
 func hit(from: Node2D, _direction: Vector2) -> void:

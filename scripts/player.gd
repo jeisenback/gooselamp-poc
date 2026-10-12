@@ -135,6 +135,8 @@ func aim_for_swing(input: PlayerInput) -> Vector2:
 func _on_swing_landed(target: Node2D, dir: Vector2) -> void:
 	if target.has_method("hit"):
 		target.hit(self, dir)
+	if target is Enemy:
+		HitStop.freeze(get_tree(), [self, target])
 	if not target.is_in_group(Groups.BOUNCY):
 		return # panels and doors are hit, not bounced from
 	if in_zero_g():
