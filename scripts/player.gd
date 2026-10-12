@@ -38,6 +38,7 @@ var _gravity_mode := GravityMode.new()
 var _zero_g_mode := ZeroGMode.new()
 
 func _ready() -> void:
+	add_to_group(Groups.PLAYER)
 	swing.landed.connect(_on_swing_landed)
 
 func _physics_process(delta: float) -> void:

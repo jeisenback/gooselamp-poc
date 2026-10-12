@@ -86,6 +86,17 @@ func die() -> void:
 	died.emit()
 	queue_free()
 
+## The nearest player, or null.
+func nearest_player() -> Player:
+	var best: Player = null
+	var best_distance := INF
+	for node in get_tree().get_nodes_in_group(Groups.PLAYER):
+		var d: float = global_position.distance_to(node.global_position)
+		if d < best_distance:
+			best = node
+			best_distance = d
+	return best
+
 ## Overridden per type. Not called while staggered or dead.
 func behave(_delta: float) -> void:
 	pass
