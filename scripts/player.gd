@@ -23,11 +23,14 @@ var grab_normal: Vector2 = Vector2.ZERO
 var fire_cooldown: float = 0.0
 
 var _gravity_mode := GravityMode.new()
+var _zero_g_mode := ZeroGMode.new()
 
 func _physics_process(delta: float) -> void:
 	var input: PlayerInput = input_override if input_override != null else PlayerInput.poll()
 	fire_cooldown = maxf(0.0, fire_cooldown - delta)
-	if not in_zero_g():
+	if in_zero_g():
+		_zero_g_mode.step(self, input, delta)
+	else:
 		_gravity_mode.step(self, input, delta)
 
 ## True when outside every compartment or when the last one entered has no gravity.
