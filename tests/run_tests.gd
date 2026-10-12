@@ -1,0 +1,75 @@
+extends SceneTree
+
+## Headless test runner:
+##   godot --headless --fixed-fps 60 -s tests/run_tests.gd
+## Runs every test_* method in tests/test_*.gd and exits 1 on any failure.
+
+func _initialize() -> void:
+	_run.call_deferred()
+
+func _run() -> void:
+	TestHooks.reset(TestCase.TEST_SAVE_PATH)
+	var errors := ErrorLogger.new()
+	OS.add_logger(errors)
+	var failed := 0
+	var passed := 0
+	var timings: Array = [] # [seconds, "file.test"], for the slowest-tests table
+	var file_seconds: Dictionary = {}
+	for file in DirAccess.get_files_at("res://tests"):
+		if not (file.begins_with("test_") and file.ends_with(".gd")):
+			continue
+		var script: GDScript = load("res://tests/" + file)
+		if script == null or not script.can_instantiate():
+			failed += 1 # a parse error would otherwise skip the whole file
+			print("  FAIL  %s does not compile" % file)
+			continue
+		for method in script.get_script_method_list():
+			var name: String = method.name
+			if not name.begins_with("test_"):
+				continue
+			var case: TestCase = script.new()
+			case.tree = self
+			var before := root.get_child_count()
+			errors.script_errors.clear()
+			TestHooks.reset(TestCase.TEST_SAVE_PATH) # no test depends on what an earlier one left behind
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(TestCase.TEST_SAVE_PATH))
+			var started := Time.get_ticks_usec()
+			await case.call(name)
+			var seconds := (Time.get_ticks_usec() - started) / 1000000.0
+			timings.append([seconds, "%s.%s" % [file.get_basename(), name]])
+			file_seconds[file.get_basename()] = file_seconds.get(file.get_basename(), 0.0) + seconds
+			TestHooks.reset(TestCase.TEST_SAVE_PATH)
+			for error in errors.script_errors:
+				case.failures.append("script error: " + error)
+			while root.get_child_count() > before:
+				var node := root.get_child(root.get_child_count() - 1)
+				root.remove_child(node)
+				node.free()
+			if case.failures.is_empty():
+				passed += 1
+				print("  ok    %s.%s" % [file.get_basename(), name])
+			else:
+				failed += 1
+				print("  FAIL  %s.%s" % [file.get_basename(), name])
+				for f in case.failures:
+					print("          " + f)
+	OS.remove_logger(errors)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(TestCase.TEST_SAVE_PATH))
+	# Let the audio thread release stopped sounds before quitting, or Godot
+	# reports their playbacks as leaked at exit.
+	OS.delay_msec(100)
+	await process_frame
+	_print_timings(timings, file_seconds)
+	print("%d passed, %d failed" % [passed, failed])
+	quit(1 if failed > 0 else 0)
+
+## Where the time goes: the slowest tests and each file's total, so a speed-up
+## starts from numbers.
+func _print_timings(timings: Array, file_seconds: Dictionary) -> void:
+	timings.sort_custom(func(a, b): return a[0] > b[0])
+	print("slowest tests:")
+	for entry in timings.slice(0, 15):
+		print("  %6.1fs  %s" % [entry[0], entry[1]])
+	print("seconds per file:")
+	for file in file_seconds:
+		print("  %6.1fs  %s" % [file_seconds[file], file])
