@@ -6,11 +6,16 @@ class_name TestHooks
 ## neither reset here nor explained below.
 
 ## Reset by reset().
-const RESET: Array = []
+const RESET: Array = [
+	"WorldState.ring_on", "WorldState.vents_open", "WorldState.boss_down",
+	"WorldState.checkpoint", "WorldState.visited", "WorldState.version",
+	"WorldState.path_override",
+]
 
 ## Static variables that are deliberately left alone, and why.
 const EXPLAINED: Dictionary = {}
 
-## `save_path` is where the game saves while the test runs (never the player's real save).
+## `save_path` is where WorldState saves while the test runs (never the player's real save).
 static func reset(save_path: String = "") -> void:
-	pass
+	WorldState.reset()
+	WorldState.path_override = save_path
