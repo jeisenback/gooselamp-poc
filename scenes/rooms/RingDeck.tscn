@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/Checkpoint.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/Drone.tscn" id="2"]
@@ -30,6 +30,9 @@ size = Vector2(496.0, 32.0)
 
 [sub_resource type="RectangleShape2D" id="sub_8"]
 size = Vector2(6912.0, 648.0)
+
+[sub_resource type="RectangleShape2D" id="sub_9"]
+size = Vector2(160.0, 56.0)
 
 
 [node name="RingDeck" type="Node2D"]
@@ -112,6 +115,21 @@ shape = SubResource("sub_8")
 [node name="Tint" type="Polygon2D" parent="Compartment"]
 color = Color(1, 0.72, 0.4, 0.1)
 polygon = PackedVector2Array(-3456.0, -324.0, 3456.0, -324.0, 3456.0, 324.0, -3456.0, 324.0)
+
+[node name="VentsClosed" type="Node2D" parent="Compartment"]
+position = Vector2(-3456.0, -324.0)
+
+[node name="PressureDoorBelow" type="StaticBody2D" parent="Compartment/VentsClosed"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Shape" type="CollisionShape2D" parent="Compartment/VentsClosed/PressureDoorBelow"]
+position = Vector2(576.0, 620.0)
+shape = SubResource("sub_9")
+
+[node name="Art" type="Polygon2D" parent="Compartment/VentsClosed/PressureDoorBelow"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(496, 592.0, 656, 592.0, 656, 648.0, 496, 648.0)
 
 [node name="Exits" type="Node2D" parent="."]
 

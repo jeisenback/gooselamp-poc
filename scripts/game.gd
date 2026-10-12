@@ -69,10 +69,18 @@ func enter(room_name: String, exit_name: String) -> void:
 	_cooldown = SWAP_COOLDOWN
 
 func _on_exit_crossed(exit: Exit) -> void:
-	if _cooldown > 0.0 or room == null:
+	if _cooldown > 0.0 or room == null or player.dead:
 		return
 	var edge := WorldGraph.edge(room.room_name, exit.exit_name)
 	if edge.is_empty():
+		return
+	# The rooms' doors are what stop the player; this is the backstop, so a
+	# gap in the geometry can never cross an edge the graph forbids. A
+	# refused player is set back inside the doorway, never left in the hull.
+	var state := {"ring_on": WorldState.ring_on, "vents_open": WorldState.vents_open, "boss_down": WorldState.boss_down}
+	if not WorldGraph.allows(edge[4], state):
+		player.global_position = exit.arrival_point()
+		player.velocity = Vector2.ZERO
 		return
 	_cooldown = SWAP_COOLDOWN
 	enter.call_deferred(edge[2], edge[3])

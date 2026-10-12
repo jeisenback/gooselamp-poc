@@ -37,10 +37,10 @@ size = Vector2(40.0, 4.0)
 size = Vector2(1152.0, 648.0)
 
 [sub_resource type="RectangleShape2D" id="sub_11"]
-size = Vector2(160.0, 32.0)
+size = Vector2(160.0, 56.0)
 
 [sub_resource type="RectangleShape2D" id="sub_12"]
-size = Vector2(140.0, 90.0)
+size = Vector2(160.0, 100.0)
 
 
 [node name="VentRoom" type="Node2D"]
@@ -140,12 +140,12 @@ collision_layer = 1
 collision_mask = 0
 
 [node name="Shape" type="CollisionShape2D" parent="Compartment/VentsOpen/HatchShut"]
-position = Vector2(300.0, 632.0)
+position = Vector2(300.0, 620.0)
 shape = SubResource("sub_11")
 
 [node name="Art" type="Polygon2D" parent="Compartment/VentsOpen/HatchShut"]
 color = Color(0.16, 0.17, 0.2, 1)
-polygon = PackedVector2Array(220, 616.0, 380, 616.0, 380, 648.0, 220, 648.0)
+polygon = PackedVector2Array(220, 592.0, 380, 592.0, 380, 648.0, 220, 648.0)
 
 [node name="VentsClosed" type="Node2D" parent="Compartment"]
 position = Vector2(-576.0, -324.0)
@@ -166,12 +166,12 @@ collision_layer = 1
 collision_mask = 0
 
 [node name="Shape" type="CollisionShape2D" parent="Compartment/RingOn/Cabinet"]
-position = Vector2(300.0, 571.0)
+position = Vector2(300.0, 566.0)
 shape = SubResource("sub_12")
 
 [node name="Art" type="Polygon2D" parent="Compartment/RingOn/Cabinet"]
 color = Color(0.16, 0.17, 0.2, 1)
-polygon = PackedVector2Array(230, 526.0, 370, 526.0, 370, 616.0, 230, 616.0)
+polygon = PackedVector2Array(220, 516.0, 380, 516.0, 380, 616.0, 220, 616.0)
 
 [node name="RingOff" type="Node2D" parent="Compartment"]
 position = Vector2(-576.0, -324.0)

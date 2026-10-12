@@ -63,7 +63,7 @@ size = Vector2(60.0, 24.0)
 size = Vector2(1152.0, 1944.0)
 
 [sub_resource type="RectangleShape2D" id="sub_19"]
-size = Vector2(32.0, 136.0)
+size = Vector2(56.0, 136.0)
 
 
 [node name="Hangar" type="Node2D"]
@@ -163,12 +163,12 @@ collision_layer = 1
 collision_mask = 0
 
 [node name="Shape" type="CollisionShape2D" parent="Compartment/VentsClosed/Hatch"]
-position = Vector2(16.0, 1844.0)
+position = Vector2(28.0, 1844.0)
 shape = SubResource("sub_19")
 
 [node name="Art" type="Polygon2D" parent="Compartment/VentsClosed/Hatch"]
 color = Color(0.16, 0.17, 0.2, 1)
-polygon = PackedVector2Array(0, 1776.0, 32, 1776.0, 32, 1912.0, 0, 1912.0)
+polygon = PackedVector2Array(0, 1776.0, 56, 1776.0, 56, 1912.0, 0, 1912.0)
 
 [node name="VentsOpen" type="Node2D" parent="Compartment"]
 position = Vector2(-576.0, -972.0)

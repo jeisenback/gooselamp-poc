@@ -29,7 +29,7 @@ size = Vector2(1152.0, 32.0)
 size = Vector2(1152.0, 1296.0)
 
 [sub_resource type="RectangleShape2D" id="sub_8"]
-size = Vector2(24.0, 136.0)
+size = Vector2(56.0, 136.0)
 
 
 [node name="ControlRoom" type="Node2D"]
@@ -113,12 +113,12 @@ collision_layer = 1
 collision_mask = 0
 
 [node name="Shape" type="CollisionShape2D" parent="Compartment/BossAlive/BossDoor"]
-position = Vector2(1108.0, 1196.0)
+position = Vector2(1124.0, 1196.0)
 shape = SubResource("sub_8")
 
 [node name="Art" type="Polygon2D" parent="Compartment/BossAlive/BossDoor"]
 color = Color(0.85, 0.9, 1, 1)
-polygon = PackedVector2Array(1096, 1128.0, 1120, 1128.0, 1120, 1264.0, 1096, 1264.0)
+polygon = PackedVector2Array(1096, 1128.0, 1152, 1128.0, 1152, 1264.0, 1096, 1264.0)
 
 [node name="BossDown" type="Node2D" parent="Compartment"]
 position = Vector2(-576.0, -648.0)

@@ -49,7 +49,7 @@ size = Vector2(60.0, 24.0)
 size = Vector2(1152.0, 1296.0)
 
 [sub_resource type="RectangleShape2D" id="sub_15"]
-size = Vector2(160.0, 32.0)
+size = Vector2(160.0, 56.0)
 
 
 [node name="Shaft" type="Node2D"]
@@ -189,12 +189,12 @@ collision_layer = 1
 collision_mask = 0
 
 [node name="Shape" type="CollisionShape2D" parent="Compartment/VentsClosed/PressureDoor"]
-position = Vector2(576.0, 48.0)
+position = Vector2(576.0, 28.0)
 shape = SubResource("sub_15")
 
 [node name="Art" type="Polygon2D" parent="Compartment/VentsClosed/PressureDoor"]
 color = Color(0.16, 0.17, 0.2, 1)
-polygon = PackedVector2Array(496, 32, 656, 32, 656, 64, 496, 64)
+polygon = PackedVector2Array(496, 0, 656, 0, 656, 56, 496, 56)
 
 [node name="VentsOpen" type="Node2D" parent="Compartment"]
 position = Vector2(-576.0, -648.0)

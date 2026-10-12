@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/SliceEnd.tscn" id="1"]
 [ext_resource type="Script" path="res://scripts/room.gd" id="2"]
@@ -22,6 +22,9 @@ size = Vector2(1152.0, 32.0)
 
 [sub_resource type="RectangleShape2D" id="sub_6"]
 size = Vector2(1152.0, 648.0)
+
+[sub_resource type="RectangleShape2D" id="sub_7"]
+size = Vector2(56.0, 136.0)
 
 
 [node name="Exit" type="Node2D"]
@@ -88,6 +91,21 @@ shape = SubResource("sub_6")
 [node name="Tint" type="Polygon2D" parent="Compartment"]
 color = Color(1, 0.72, 0.4, 0.1)
 polygon = PackedVector2Array(-576.0, -324.0, 576.0, -324.0, 576.0, 324.0, -576.0, 324.0)
+
+[node name="BossAlive" type="Node2D" parent="Compartment"]
+position = Vector2(-576.0, -324.0)
+
+[node name="BossDoor" type="StaticBody2D" parent="Compartment/BossAlive"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Shape" type="CollisionShape2D" parent="Compartment/BossAlive/BossDoor"]
+position = Vector2(28.0, 548.0)
+shape = SubResource("sub_7")
+
+[node name="Art" type="Polygon2D" parent="Compartment/BossAlive/BossDoor"]
+color = Color(0.85, 0.9, 1, 1)
+polygon = PackedVector2Array(0, 480.0, 56, 480.0, 56, 616.0, 0, 616.0)
 
 [node name="Exits" type="Node2D" parent="."]
 

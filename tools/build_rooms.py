@@ -12,6 +12,7 @@ import math, os
 
 CELL_W, CELL_H = 1152, 648
 T = 32                      # hull thickness
+DOOR = 24                   # how far a door stands proud of the hull, into the room
 HULL = "Color(0.1, 0.11, 0.13, 1)"
 PLATE = "Color(0.22, 0.19, 0.14, 1)"
 SCENERY = "Color(0.16, 0.17, 0.2, 1)"
@@ -281,7 +282,7 @@ def shaft():
     for i, pos in enumerate(ledges[1:5]):
         r.spawner("MiteSpawner%d" % i, "Mite", pos)
     # the pressure door across the top opening: sealed with the vents closed, slid aside when open
-    r.state_block("VentsClosed", "PressureDoor", 496, T, 160, 32, color=SCENERY)
+    r.state_block("VentsClosed", "PressureDoor", 496, 0, 160, T + DOOR, color=SCENERY)
     r.state_block("VentsOpen", "PressureDoorOpen", 656, T, 160, 32, color=SCENERY, collide=False)
     r.write()
 
@@ -303,10 +304,10 @@ def vent_room():
     r.switch("VentsPanel", "vents", (900, fy - 20))
     r.block(880, fy - 44, 40, 4, color=SCENERY, name="PanelShelf")
     # the floor hatch: shut while the vents blow, open while they are still
-    r.state_block("VentsOpen", "HatchShut", 220, fy, 160, T, color=SCENERY)
+    r.state_block("VentsOpen", "HatchShut", 220, fy - DOOR, 160, T + DOOR, color=SCENERY)
     r.state_block("VentsClosed", "HatchOpen", 380, fy + 8, 160, 16, color=SCENERY, collide=False)
     # the loose cabinet: stands on the hatch with the ring on, floats clear with it off
-    r.state_block("RingOn", "Cabinet", 230, fy - 90, 140, 90, color=SCENERY)
+    r.state_block("RingOn", "Cabinet", 220, fy - 100, 160, 100, color=SCENERY)
     r.state_block("RingOff", "CabinetAdrift", 480, 140, 140, 90, color=SCENERY, collide=False)
     r.vent("Vent", (864, 324), (576, 584), (1, 0))
     r.write()
@@ -314,6 +315,8 @@ def vent_room():
 def locker():
     r = Room("Locker", (1, 1), True)
     r.exit("up", "top", 300)
+    r.state_block("VentsOpen", "HatchShut", 220, 0, 160, T + DOOR, color=SCENERY)
+    r.state_block("RingOn", "CabinetAbove", 220, 0, 160, T + DOOR, color=SCENERY)
     # the view port into the Control Room: a window with a painted miniature and a still Warden
     t = '[node name="ViewPort" type="Node2D" parent="."]\nposition = Vector2(980, 300)\n\n'
     def poly(name, color, pts):
@@ -333,6 +336,7 @@ def workshop():
     fy = r.floor_y
     r.exit("west", "left")
     r.exit("east", "right")
+    r.state_block("VentsClosed", "HangarHatch", r.w - T - DOOR, fy - 136, T + DOOR, 136, color=SCENERY)
     r.block(T, 300, 80, 24, color=SCENERY)
     r.block(r.w - T - 80, 200, 80, 24, color=SCENERY)
     r.spawner("ClingerSpawner1", "Clinger", (T + 40, 300 - 16))
@@ -347,7 +351,7 @@ def hangar():
     r.exit("west", "left")
     r.exit("up", "top", 576)
     # the hatch from the Workshop is shut until the vents open
-    r.state_block("VentsClosed", "Hatch", 0, fy - 136, T, 136, color=SCENERY)
+    r.state_block("VentsClosed", "Hatch", 0, fy - 136, T + DOOR, 136, color=SCENERY)
     r.state_block("VentsOpen", "HatchOpen", 0, fy - 136 - 140, T, 136, color=SCENERY, collide=False)
     # the gale blows east into a shredded hull wall
     r.vent("Vent", (576, r.h / 2), (1088, r.h - 2 * T), (1, 0))
@@ -369,6 +373,7 @@ def ring_deck():
     r.exit("down_east", "bottom", r.w - 576)
     r.exit("east", "right")
     r.checkpoint((r.w - 300, fy - 40), "Ring Deck")
+    r.state_block("VentsClosed", "PressureDoorBelow", 496, fy - DOOR, 160, T + DOOR, color=SCENERY)
     for i, x in enumerate([1500, 3500, 5500]):
         r.spawner("DroneSpawner%d" % i, "Drone", (x, 300))
     # the ring housing: a band of dim arcs along the top of the corridor
@@ -388,7 +393,7 @@ def control_room():
     r.switch("Panel1", "ring", (44, fy - 20))
     r.spawner("WardenSpawner", "Warden", (576, fy - 280))
     # the boss door fills the east doorway until the Warden is down
-    r.state_block("BossAlive", "BossDoor", r.w - T - 24, fy - 136, 24, 136, color=BRIGHT)
+    r.state_block("BossAlive", "BossDoor", r.w - T - DOOR, fy - 136, T + DOOR, 136, color=BRIGHT)
     r.state_block("BossDown", "BossDoorOpen", r.w - T - 24, fy - 136 - 150, 24, 136, color=BRIGHT, collide=False)
     r.write()
 
@@ -396,6 +401,7 @@ def exit_room():
     r = Room("Exit", (1, 1), True)
     fy = r.floor_y
     r.exit("west", "left")
+    r.state_block("BossAlive", "BossDoor", 0, fy - 136, T + DOOR, 136, color=BRIGHT)
     r.instance("SliceEnd", "res://scenes/SliceEnd.tscn", props={"position": "Vector2(%s)" % f((900, fy - 64))})
     r.write()
 

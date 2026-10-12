@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/Clinger.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/Spawner.tscn" id="2"]
@@ -36,6 +36,9 @@ size = Vector2(80.0, 24.0)
 
 [sub_resource type="RectangleShape2D" id="sub_10"]
 size = Vector2(1152.0, 648.0)
+
+[sub_resource type="RectangleShape2D" id="sub_11"]
+size = Vector2(56.0, 136.0)
 
 
 [node name="Workshop" type="Node2D"]
@@ -126,6 +129,21 @@ shape = SubResource("sub_10")
 [node name="Tint" type="Polygon2D" parent="Compartment"]
 color = Color(1, 0.72, 0.4, 0.1)
 polygon = PackedVector2Array(-576.0, -324.0, 576.0, -324.0, 576.0, 324.0, -576.0, 324.0)
+
+[node name="VentsClosed" type="Node2D" parent="Compartment"]
+position = Vector2(-576.0, -324.0)
+
+[node name="HangarHatch" type="StaticBody2D" parent="Compartment/VentsClosed"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Shape" type="CollisionShape2D" parent="Compartment/VentsClosed/HangarHatch"]
+position = Vector2(1124.0, 548.0)
+shape = SubResource("sub_11")
+
+[node name="Art" type="Polygon2D" parent="Compartment/VentsClosed/HangarHatch"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(1096, 480.0, 1152, 480.0, 1152, 616.0, 1096, 616.0)
 
 [node name="Exits" type="Node2D" parent="."]
 

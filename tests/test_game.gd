@@ -27,7 +27,8 @@ func test_crossing_an_exit_swaps_rooms_and_keeps_velocity() -> void:
 	assert_eq(g.room.room_name, "Breach", "swapped")
 	assert_true(g.player.velocity.x < -100.0, "still moving left, got %s" % g.player.velocity)
 	assert_true(g.player.in_zero_g(), "the Breach is zero-g")
-	await physics_frames(frame_count(Game.SWAP_COOLDOWN))
+	g.player.velocity = Vector2.ZERO # stop dead at the arrival point: it must be clear of the exit
+	await physics_frames(frame_count(Game.SWAP_COOLDOWN) + 2)
 	assert_eq(g.room.room_name, "Breach", "did not bounce back through the arrival exit")
 
 func test_only_the_player_crosses() -> void:
@@ -72,3 +73,55 @@ func test_boss_containers_follow_the_flag() -> void:
 	WorldState.set_boss_down()
 	await physics_frames(1)
 	assert_true(not c.get_node("BossAlive").visible and c.get_node("BossDown").visible, "down")
+
+func test_a_dead_body_does_not_cross_an_exit() -> void:
+	var g := _game()
+	g.enter("Breach", "west")
+	await physics_frames(2)
+	var east := g.room.exit_named("east")
+	g.player.global_position = east.arrival_point() + east.inward * 10.0
+	g.player.velocity = -east.inward * 200.0
+	for i in range(5):
+		g.player.invulnerable_for = 0.0
+		g.player.take_hit(Vector2.ZERO)
+	g.player.velocity = -east.inward * 200.0
+	await physics_frames(frame_count(0.5))
+	assert_eq(g.room.room_name, "Breach", "the dead drift, they do not travel")
+
+## Every edge the graph gates is shut in the real rooms when its needs fail: a
+## player pushed at the doorway from either side stays in the room, well
+## inside its bounds. The geometry, not only the controller, must hold.
+func test_every_gated_edge_is_shut_when_its_needs_fail() -> void:
+	var g := _game()
+	var states := []
+	for ring_on in [true, false]:
+		for vents_open in [false, true]:
+			for boss_down in [false, true]:
+				states.append({"ring_on": ring_on, "vents_open": vents_open, "boss_down": boss_down})
+	for e in WorldGraph.EDGES:
+		if e[4].is_empty():
+			continue
+		for state in states:
+			if WorldGraph.allows(e[4], state):
+				continue
+			WorldState.reset()
+			WorldState.set_ring(state.ring_on)
+			WorldState.set_vents(state.vents_open)
+			if state.boss_down:
+				WorldState.set_boss_down()
+			g.enter(e[0], "")
+			await physics_frames(2)
+			var exit := g.room.exit_named(e[1])
+			var inward: Vector2 = exit.inward # copied: a leaking door would swap the room and free the exit
+			g.player.global_position = exit.arrival_point() + inward * 20.0
+			g.player.velocity = -inward * 220.0
+			g.player.input_override.aim = -inward
+			g.player.input_override.grab_held = false
+			for i in range(frame_count(0.6)):
+				await physics_frames(1)
+				if g.player.in_zero_g():
+					g.player.velocity = -inward * 220.0 # keep pushing at the door
+			var label := "%s %s with ring_on=%s vents_open=%s boss_down=%s" % [e[0], e[1], state.ring_on, state.vents_open, state.boss_down]
+			assert_eq(g.room.room_name, e[0], "%s: stays in the room" % label)
+			assert_true(g.room.bounds().grow(-40.0).has_point(g.player.global_position), "%s: held well inside the room, at %s" % [label, g.player.global_position])
+			g.player.input_override.aim = Vector2.ZERO
