@@ -2,11 +2,14 @@ class_name Compartment extends Area2D
 
 ## One per room. Declares live or dead plates and shows or hides the children
 ## that belong to a world state: direct children named RingOn, RingOff,
-## VentsOpen and VentsClosed are active only while their state holds. Bodies
+## VentsOpen, VentsClosed, BossAlive and BossDown are active only while their
+## state holds. A child Polygon2D named Tint is coloured by gravity. Bodies
 ## that enter are told `enter_compartment(self)`, bodies that leave
 ## `exit_compartment(self)`, so a body can ask `has_gravity()`.
 
-const STATE_CHILDREN := ["RingOn", "RingOff", "VentsOpen", "VentsClosed"]
+const STATE_CHILDREN := ["RingOn", "RingOff", "VentsOpen", "VentsClosed", "BossAlive", "BossDown"]
+const TINT_GRAVITY := Color(1.0, 0.72, 0.4, 0.10)   # warm
+const TINT_ZERO_G := Color(0.4, 0.7, 1.0, 0.12)     # cool
 
 @export var plates_live: bool = true
 @export var room_name: String = ""
@@ -16,6 +19,7 @@ var _seen_version: int = -1
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
+	child_entered_tree.connect(func(_child): apply()) # a container added later gets its state at once
 	apply()
 
 func _physics_process(_delta: float) -> void:
@@ -33,6 +37,11 @@ func apply() -> void:
 	_set_active("RingOff", not WorldState.ring_on)
 	_set_active("VentsOpen", WorldState.vents_open)
 	_set_active("VentsClosed", not WorldState.vents_open)
+	_set_active("BossAlive", not WorldState.boss_down)
+	_set_active("BossDown", WorldState.boss_down)
+	var tint := get_node_or_null("Tint") as Polygon2D
+	if tint != null:
+		tint.color = TINT_GRAVITY if has_gravity() else TINT_ZERO_G
 
 func _set_active(child_name: String, active: bool) -> void:
 	var child := get_node_or_null(child_name)

@@ -9,7 +9,7 @@ class_name TestHooks
 const RESET: Array = [
 	"WorldState.ring_on", "WorldState.vents_open", "WorldState.boss_down",
 	"WorldState.checkpoint", "WorldState.visited", "WorldState.version",
-	"WorldState.path_override",
+	"WorldState.path_override", "Title.seen",
 ]
 
 ## Static variables that are deliberately left alone, and why.
@@ -22,3 +22,7 @@ const EXPLAINED: Dictionary = {
 static func reset(save_path: String = "") -> void:
 	WorldState.reset()
 	WorldState.path_override = save_path
+	Title.seen = true # scene tests must not start paused on the title
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree != null:
+		tree.paused = false

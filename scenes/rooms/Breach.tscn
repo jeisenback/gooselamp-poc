@@ -1,0 +1,402 @@
+[gd_scene load_steps=16 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/Mite.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/Spawner.tscn" id="2"]
+[ext_resource type="Script" path="res://scripts/room.gd" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/Compartment.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/Exit.tscn" id="5"]
+
+[sub_resource type="RectangleShape2D" id="sub_1"]
+size = Vector2(32.0, 256.0)
+
+[sub_resource type="RectangleShape2D" id="sub_2"]
+size = Vector2(32.0, 256.0)
+
+[sub_resource type="RectangleShape2D" id="sub_3"]
+size = Vector2(32.0, 256.0)
+
+[sub_resource type="RectangleShape2D" id="sub_4"]
+size = Vector2(32.0, 256.0)
+
+[sub_resource type="RectangleShape2D" id="sub_5"]
+size = Vector2(1152.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="sub_6"]
+size = Vector2(1152.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="sub_7"]
+size = Vector2(220.0, 90.0)
+
+[sub_resource type="RectangleShape2D" id="sub_8"]
+size = Vector2(260.0, 80.0)
+
+[sub_resource type="RectangleShape2D" id="sub_9"]
+size = Vector2(180.0, 110.0)
+
+[sub_resource type="RectangleShape2D" id="sub_10"]
+size = Vector2(1152.0, 648.0)
+
+
+[node name="Breach" type="Node2D"]
+script = ExtResource("3")
+room_name = "Breach"
+floor_y = 616.0
+
+[node name="Sky" type="Polygon2D" parent="."]
+color = Color(0.01, 0.01, 0.02, 1)
+polygon = PackedVector2Array(0, 0, 1152, 0, 1152, 648, 0, 648)
+
+[node name="Star0" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(895.154, 512.021, 896.882, 512.021, 896.882, 513.749, 895.154, 513.749)
+
+[node name="Star1" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(316.644, 32.264, 318.638, 32.264, 318.638, 34.258, 316.644, 34.258)
+
+[node name="Star2" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(543.637, 475.683, 545.196, 475.683, 545.196, 477.242, 543.637, 477.242)
+
+[node name="Star3" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(869.912, 191.256, 872.115, 191.256, 872.115, 193.459, 869.912, 193.459)
+
+[node name="Star4" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(826.049, 273.78, 827.857, 273.78, 827.857, 275.587, 826.049, 275.587)
+
+[node name="Star5" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(774.072, 144.703, 775.903, 144.703, 775.903, 146.534, 774.072, 146.534)
+
+[node name="Star6" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(907.975, 187.064, 910.18, 187.064, 910.18, 189.269, 907.975, 189.269)
+
+[node name="Star7" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(778.031, 525.061, 779.534, 525.061, 779.534, 526.564, 778.031, 526.564)
+
+[node name="Star8" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(133.33, 499.365, 135.538, 499.365, 135.538, 501.572, 133.33, 501.572)
+
+[node name="Star9" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(516.391, 86.768, 517.687, 86.768, 517.687, 88.063, 516.391, 88.063)
+
+[node name="Star10" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(722.792, 202.051, 725.219, 202.051, 725.219, 204.478, 722.792, 204.478)
+
+[node name="Star11" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(672.364, 149.311, 674.347, 149.311, 674.347, 151.294, 672.364, 151.294)
+
+[node name="Star12" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(424.093, 576.719, 426.457, 576.719, 426.457, 579.083, 424.093, 579.083)
+
+[node name="Star13" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(591.94, 408.43, 593.987, 408.43, 593.987, 410.477, 591.94, 410.477)
+
+[node name="Star14" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(908.389, 602.203, 909.432, 602.203, 909.432, 603.246, 908.389, 603.246)
+
+[node name="Star15" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(425.178, 383.42, 426.634, 383.42, 426.634, 384.877, 425.178, 384.877)
+
+[node name="Star16" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(673.003, 84.377, 675.323, 84.377, 675.323, 86.698, 673.003, 86.698)
+
+[node name="Star17" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(603.486, 100.225, 605.48, 100.225, 605.48, 102.22, 603.486, 102.22)
+
+[node name="Star18" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(371.761, 146.595, 373.487, 146.595, 373.487, 148.321, 371.761, 148.321)
+
+[node name="Star19" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(182.259, 154.573, 184.557, 154.573, 184.557, 156.871, 182.259, 156.871)
+
+[node name="Star20" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(791.667, 39.313, 793.835, 39.313, 793.835, 41.48, 791.667, 41.48)
+
+[node name="Star21" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(50.56, 226.421, 52.917, 226.421, 52.917, 228.777, 50.56, 228.777)
+
+[node name="Star22" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(706.849, 210.777, 708.415, 210.777, 708.415, 212.343, 706.849, 212.343)
+
+[node name="Star23" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(455.412, 106.071, 457.912, 106.071, 457.912, 108.571, 455.412, 108.571)
+
+[node name="Star24" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(90.558, 278.967, 92.678, 278.967, 92.678, 281.086, 90.558, 281.086)
+
+[node name="Star25" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(464.768, 604.889, 466.136, 604.889, 466.136, 606.257, 464.768, 606.257)
+
+[node name="Star26" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(1097.431, 553.078, 1099.436, 553.078, 1099.436, 555.083, 1097.431, 555.083)
+
+[node name="Star27" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(999.79, 293.161, 1002.037, 293.161, 1002.037, 295.408, 999.79, 295.408)
+
+[node name="Star28" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(898.156, 333.745, 899.862, 333.745, 899.862, 335.451, 898.156, 335.451)
+
+[node name="Star29" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(799.772, 270.893, 800.901, 270.893, 800.901, 272.022, 799.772, 272.022)
+
+[node name="Star30" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(844.209, 187.239, 845.941, 187.239, 845.941, 188.97, 844.209, 188.97)
+
+[node name="Star31" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(885.024, 132.523, 886.057, 132.523, 886.057, 133.556, 885.024, 133.556)
+
+[node name="Star32" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(166.363, 376.219, 167.904, 376.219, 167.904, 377.76, 166.363, 377.76)
+
+[node name="Star33" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(310.868, 295.695, 313.259, 295.695, 313.259, 298.087, 310.868, 298.087)
+
+[node name="Star34" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(309.183, 271.774, 311.502, 271.774, 311.502, 274.093, 309.183, 274.093)
+
+[node name="Star35" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(698.049, 188.476, 699.761, 188.476, 699.761, 190.188, 698.049, 190.188)
+
+[node name="Star36" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(552.65, 115.036, 554.217, 115.036, 554.217, 116.602, 552.65, 116.602)
+
+[node name="Star37" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(364.573, 501.969, 366.058, 501.969, 366.058, 503.454, 364.573, 503.454)
+
+[node name="Star38" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(749.257, 598.927, 751.641, 598.927, 751.641, 601.312, 749.257, 601.312)
+
+[node name="Star39" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(441.135, 384.17, 442.615, 384.17, 442.615, 385.651, 441.135, 385.651)
+
+[node name="Star40" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(465.33, 316.991, 467.521, 316.991, 467.521, 319.181, 465.33, 319.181)
+
+[node name="Star41" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(1051.034, 201.821, 1052.044, 201.821, 1052.044, 202.831, 1051.034, 202.831)
+
+[node name="Star42" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(520.901, 65.349, 521.946, 65.349, 521.946, 66.395, 520.901, 66.395)
+
+[node name="Star43" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(873.647, 97.491, 875.725, 97.491, 875.725, 99.568, 873.647, 99.568)
+
+[node name="Star44" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(425.868, 580.049, 428.149, 580.049, 428.149, 582.329, 425.868, 582.329)
+
+[node name="Star45" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(99.755, 144.497, 102.176, 144.497, 102.176, 146.918, 99.755, 146.918)
+
+[node name="Star46" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(699.414, 278.513, 701.588, 278.513, 701.588, 280.687, 699.414, 280.687)
+
+[node name="Star47" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(917.103, 319.149, 918.806, 319.149, 918.806, 320.853, 917.103, 320.853)
+
+[node name="Star48" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(140.969, 243.392, 142.186, 243.392, 142.186, 244.609, 140.969, 244.609)
+
+[node name="Star49" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(712.646, 386.243, 713.862, 386.243, 713.862, 387.459, 712.646, 387.459)
+
+[node name="Star50" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(715.272, 88.836, 716.43, 88.836, 716.43, 89.994, 715.272, 89.994)
+
+[node name="Star51" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(734.38, 302.225, 736.73, 302.225, 736.73, 304.574, 734.38, 304.574)
+
+[node name="Star52" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(716.567, 441.6, 717.757, 441.6, 717.757, 442.791, 716.567, 442.791)
+
+[node name="Star53" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(937.938, 80.789, 939.865, 80.789, 939.865, 82.717, 937.938, 82.717)
+
+[node name="Star54" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(1023.601, 562.114, 1025.941, 562.114, 1025.941, 564.454, 1023.601, 564.454)
+
+[node name="Star55" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(523.758, 437.179, 525.945, 437.179, 525.945, 439.366, 523.758, 439.366)
+
+[node name="Star56" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(181.134, 582.947, 183.498, 582.947, 183.498, 585.31, 181.134, 585.31)
+
+[node name="Star57" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(511.685, 486.643, 513.355, 486.643, 513.355, 488.313, 511.685, 488.313)
+
+[node name="Star58" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(332.731, 448.088, 333.826, 448.088, 333.826, 449.183, 332.731, 449.183)
+
+[node name="Star59" type="Polygon2D" parent="."]
+color = Color(0.8, 0.85, 0.95, 1)
+polygon = PackedVector2Array(902.616, 603.197, 904.045, 603.197, 904.045, 604.626, 902.616, 604.626)
+
+[node name="Hull" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Wall0" type="CollisionShape2D" parent="Hull"]
+position = Vector2(16.0, 128.0)
+shape = SubResource("sub_1")
+
+[node name="WallArt0" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(0, 0.0, 32, 0.0, 32, 256.0, 0, 256.0)
+
+[node name="Wall1" type="CollisionShape2D" parent="Hull"]
+position = Vector2(16.0, 520.0)
+shape = SubResource("sub_2")
+
+[node name="WallArt1" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(0, 392, 32, 392, 32, 648, 0, 648)
+
+[node name="Wall2" type="CollisionShape2D" parent="Hull"]
+position = Vector2(1136.0, 128.0)
+shape = SubResource("sub_3")
+
+[node name="WallArt2" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(1120, 0.0, 1152, 0.0, 1152, 256.0, 1120, 256.0)
+
+[node name="Wall3" type="CollisionShape2D" parent="Hull"]
+position = Vector2(1136.0, 520.0)
+shape = SubResource("sub_4")
+
+[node name="WallArt3" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(1120, 392, 1152, 392, 1152, 648, 1120, 648)
+
+[node name="Wall4" type="CollisionShape2D" parent="Hull"]
+position = Vector2(576.0, 16.0)
+shape = SubResource("sub_5")
+
+[node name="WallArt4" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(0.0, 0, 1152.0, 0, 1152.0, 32, 0.0, 32)
+
+[node name="Wall5" type="CollisionShape2D" parent="Hull"]
+position = Vector2(576.0, 632.0)
+shape = SubResource("sub_6")
+
+[node name="WallArt5" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(0.0, 616, 1152.0, 616, 1152.0, 648, 0.0, 648)
+
+[node name="Wall6" type="CollisionShape2D" parent="Hull"]
+position = Vector2(330.0, 205.0)
+shape = SubResource("sub_7")
+
+[node name="WallArt6" type="Polygon2D" parent="Hull"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(220, 160, 440, 160, 440, 250, 220, 250)
+
+[node name="Wall7" type="CollisionShape2D" parent="Hull"]
+position = Vector2(690.0, 440.0)
+shape = SubResource("sub_8")
+
+[node name="WallArt7" type="Polygon2D" parent="Hull"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(560, 400, 820, 400, 820, 480, 560, 480)
+
+[node name="Wall8" type="CollisionShape2D" parent="Hull"]
+position = Vector2(890.0, 175.0)
+shape = SubResource("sub_9")
+
+[node name="WallArt8" type="Polygon2D" parent="Hull"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(800, 120, 980, 120, 980, 230, 800, 230)
+
+[node name="Compartment" parent="." instance=ExtResource("4")]
+position = Vector2(576.0, 324.0)
+plates_live = false
+room_name = "Breach"
+
+[node name="Bounds" parent="Compartment" index="0"]
+shape = SubResource("sub_10")
+
+[node name="Tint" type="Polygon2D" parent="Compartment"]
+color = Color(1, 0.72, 0.4, 0.1)
+polygon = PackedVector2Array(-576.0, -324.0, 576.0, -324.0, 576.0, 324.0, -576.0, 324.0)
+
+[node name="Exits" type="Node2D" parent="."]
+
+[node name="west" parent="Exits" instance=ExtResource("5")]
+position = Vector2(16.0, 324.0)
+rotation = 0.0
+exit_name = "west"
+inward = Vector2(1, 0)
+
+[node name="east" parent="Exits" instance=ExtResource("5")]
+position = Vector2(1136.0, 324.0)
+rotation = 0.0
+exit_name = "east"
+inward = Vector2(-1, 0)
+
+[node name="MiteSpawner0" parent="." instance=ExtResource("2")]
+position = Vector2(330.0, 152)
+scene = ExtResource("1")
+
+[node name="MiteSpawner1" parent="." instance=ExtResource("2")]
+position = Vector2(690.0, 392)
+scene = ExtResource("1")
+
+[node name="MiteSpawner2" parent="." instance=ExtResource("2")]
+position = Vector2(890.0, 112)
+scene = ExtResource("1")
+
