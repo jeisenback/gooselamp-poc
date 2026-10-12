@@ -341,6 +341,64 @@ def workshop():
     r.vent("Vent", (576, 324), (1088, 584), (1, 0))
     r.write()
 
+def hangar():
+    r = Room("Hangar", (1, 3), True)
+    fy = r.floor_y
+    r.exit("west", "left")
+    r.exit("up", "top", 576)
+    # the hatch from the Workshop is shut until the vents open
+    r.state_block("VentsClosed", "Hatch", 0, fy - 136, T, 136, color=SCENERY)
+    r.state_block("VentsOpen", "HatchOpen", 0, fy - 136 - 140, T, 136, color=SCENERY, collide=False)
+    # the gale blows east into a shredded hull wall
+    r.vent("Vent", (576, r.h / 2), (1088, r.h - 2 * T), (1, 0))
+    y = 240
+    i = 0
+    while y < fy - 200:
+        r.hazard("Shred%d" % i, (r.w - T - 14, y), size=(28, 140))
+        y += 260
+        i += 1
+    for j, y in enumerate([800, 1400]):
+        r.block(T, y, 60, 24, color=SCENERY)
+        r.spawner("MiteSpawner%d" % j, "Mite", (T + 30, y - 8))
+    r.write()
+
+def ring_deck():
+    r = Room("Ring Deck", (6, 1), True)
+    fy = r.floor_y
+    r.exit("down_west", "bottom", 576)
+    r.exit("down_east", "bottom", r.w - 576)
+    r.exit("east", "right")
+    r.checkpoint((r.w - 300, fy - 40), "Ring Deck")
+    for i, x in enumerate([1500, 3500, 5500]):
+        r.spawner("DroneSpawner%d" % i, "Drone", (x, 300))
+    # the ring housing: a band of dim arcs along the top of the corridor
+    t = ""
+    for i in range(0, r.w // 192):
+        x = i * 192 + 96
+        pts = [(x - 90, 120), (x - 60, 60), (x + 60, 60), (x + 90, 120), (x + 60, 108), (x, 80), (x - 60, 108)]
+        t += '[node name="Arc%d" type="Polygon2D" parent="."]\ncolor = %s\npolygon = PackedVector2Array(%s)\n\n' % (i, SCENERY, f([c for p in pts for c in p]))
+    r.node(t)
+    r.write()
+
+def control_room():
+    r = Room("Control Room", (1, 2), True)   # two cells tall in the scene (room for the Warden's hover), one on the map
+    fy = r.floor_y
+    r.exit("west", "left")
+    r.exit("east", "right")
+    r.switch("Panel1", "ring", (44, fy - 20))
+    r.spawner("WardenSpawner", "Warden", (576, fy - 280))
+    # the boss door fills the east doorway until the Warden is down
+    r.state_block("BossAlive", "BossDoor", r.w - T - 24, fy - 136, 24, 136, color=BRIGHT)
+    r.state_block("BossDown", "BossDoorOpen", r.w - T - 24, fy - 136 - 150, 24, 136, color=BRIGHT, collide=False)
+    r.write()
+
+def exit_room():
+    r = Room("Exit", (1, 1), True)
+    fy = r.floor_y
+    r.exit("west", "left")
+    r.instance("SliceEnd", "res://scenes/SliceEnd.tscn", props={"position": "Vector2(%s)" % f((900, fy - 64))})
+    r.write()
+
 if __name__ == "__main__":
     dock()
     breach()
@@ -351,4 +409,8 @@ if __name__ == "__main__":
     vent_room()
     locker()
     workshop()
+    hangar()
+    ring_deck()
+    control_room()
+    exit_room()
     print("rooms written")

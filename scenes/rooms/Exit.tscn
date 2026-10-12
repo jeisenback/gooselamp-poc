@@ -1,0 +1,102 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/SliceEnd.tscn" id="1"]
+[ext_resource type="Script" path="res://scripts/room.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/Compartment.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/Exit.tscn" id="4"]
+
+[sub_resource type="RectangleShape2D" id="sub_1"]
+size = Vector2(32.0, 480.0)
+
+[sub_resource type="RectangleShape2D" id="sub_2"]
+size = Vector2(32.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="sub_3"]
+size = Vector2(32.0, 648.0)
+
+[sub_resource type="RectangleShape2D" id="sub_4"]
+size = Vector2(1152.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="sub_5"]
+size = Vector2(1152.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="sub_6"]
+size = Vector2(1152.0, 648.0)
+
+
+[node name="Exit" type="Node2D"]
+script = ExtResource("2")
+room_name = "Exit"
+floor_y = 616.0
+
+[node name="Hull" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Wall0" type="CollisionShape2D" parent="Hull"]
+position = Vector2(16.0, 240.0)
+shape = SubResource("sub_1")
+
+[node name="WallArt0" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(0, 0.0, 32, 0.0, 32, 480.0, 0, 480.0)
+
+[node name="Wall1" type="CollisionShape2D" parent="Hull"]
+position = Vector2(16.0, 632.0)
+shape = SubResource("sub_2")
+
+[node name="WallArt1" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(0, 616.0, 32, 616.0, 32, 648.0, 0, 648.0)
+
+[node name="Wall2" type="CollisionShape2D" parent="Hull"]
+position = Vector2(1136.0, 324.0)
+shape = SubResource("sub_3")
+
+[node name="WallArt2" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(1120, 0.0, 1152, 0.0, 1152, 648.0, 1120, 648.0)
+
+[node name="Wall3" type="CollisionShape2D" parent="Hull"]
+position = Vector2(576.0, 16.0)
+shape = SubResource("sub_4")
+
+[node name="WallArt3" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(0.0, 0, 1152.0, 0, 1152.0, 32, 0.0, 32)
+
+[node name="Wall4" type="CollisionShape2D" parent="Hull"]
+position = Vector2(576.0, 632.0)
+shape = SubResource("sub_5")
+
+[node name="WallArt4" type="Polygon2D" parent="Hull"]
+color = Color(0.1, 0.11, 0.13, 1)
+polygon = PackedVector2Array(0.0, 616, 1152.0, 616, 1152.0, 648, 0.0, 648)
+
+[node name="PlateArt" type="Polygon2D" parent="Hull"]
+color = Color(0.22, 0.19, 0.14, 1)
+polygon = PackedVector2Array(32, 616.0, 1120, 616.0, 1120, 622.0, 32, 622.0)
+
+[node name="Compartment" parent="." instance=ExtResource("3")]
+position = Vector2(576.0, 324.0)
+plates_live = true
+room_name = "Exit"
+
+[node name="Bounds" parent="Compartment" index="0"]
+shape = SubResource("sub_6")
+
+[node name="Tint" type="Polygon2D" parent="Compartment"]
+color = Color(1, 0.72, 0.4, 0.1)
+polygon = PackedVector2Array(-576.0, -324.0, 576.0, -324.0, 576.0, 324.0, -576.0, 324.0)
+
+[node name="Exits" type="Node2D" parent="."]
+
+[node name="west" parent="Exits" instance=ExtResource("4")]
+position = Vector2(16.0, 548.0)
+rotation = 0.0
+exit_name = "west"
+inward = Vector2(1, 0)
+
+[node name="SliceEnd" parent="." instance=ExtResource("1")]
+position = Vector2(900, 552.0)
+
