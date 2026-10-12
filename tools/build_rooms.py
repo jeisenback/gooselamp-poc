@@ -285,10 +285,70 @@ def shaft():
     r.state_block("VentsOpen", "PressureDoorOpen", 656, T, 160, 32, color=SCENERY, collide=False)
     r.write()
 
+def spine_east():
+    r = Room("Spine East", (1, 1), True, floor_y=396)   # 220 px above Spine West's floor
+    r.floor_segments = [(0, r.w)]
+    r.exit("west", "left")
+    r.exit("east", "right")
+    r.spawner("DroneSpawner", "Drone", (576, 200))
+    r.polygon("Hull", "PlateArt", PLATE, r.rect_pts(T, r.floor_y, r.w - 2 * T, 6))
+    r.write()
+
+def vent_room():
+    r = Room("Vent Room", (1, 1), True)
+    fy = r.floor_y
+    r.exit("west", "left")
+    r.exit("down", "bottom", 300)
+    r.exit("east", "right")
+    r.switch("VentsPanel", "vents", (900, fy - 20))
+    r.block(880, fy - 44, 40, 4, color=SCENERY, name="PanelShelf")
+    # the floor hatch: shut while the vents blow, open while they are still
+    r.state_block("VentsOpen", "HatchShut", 220, fy, 160, T, color=SCENERY)
+    r.state_block("VentsClosed", "HatchOpen", 380, fy + 8, 160, 16, color=SCENERY, collide=False)
+    # the loose cabinet: stands on the hatch with the ring on, floats clear with it off
+    r.state_block("RingOn", "Cabinet", 230, fy - 90, 140, 90, color=SCENERY)
+    r.state_block("RingOff", "CabinetAdrift", 480, 140, 140, 90, color=SCENERY, collide=False)
+    r.vent("Vent", (864, 324), (576, 584), (1, 0))
+    r.write()
+
+def locker():
+    r = Room("Locker", (1, 1), True)
+    r.exit("up", "top", 300)
+    # the view port into the Control Room: a window with a painted miniature and a still Warden
+    t = '[node name="ViewPort" type="Node2D" parent="."]\nposition = Vector2(980, 300)\n\n'
+    def poly(name, color, pts):
+        return '[node name="%s" type="Polygon2D" parent="ViewPort"]\ncolor = %s\npolygon = PackedVector2Array(%s)\n\n' % (name, color, f([c for p in pts for c in p]))
+    t += poly("Frame", SCENERY, r.rect_pts(-110, -80, 220, 160))
+    t += poly("Glass", "Color(0.05, 0.06, 0.09, 1)", r.rect_pts(-100, -70, 200, 140))
+    t += poly("FarFloor", HULL, r.rect_pts(-100, 50, 200, 20))
+    t += poly("Panel", "Color(0.35, 0.32, 0.2, 1)", r.rect_pts(-90, 30, 8, 20))
+    t += poly("Warden", "Color(0.45, 0.16, 0.1, 1)", [(-20, -8), (-12, -20), (12, -20), (20, -8), (20, 8), (12, 20), (-12, 20), (-20, 8)])
+    t += poly("WardenLights", "Color(0.6, 0.55, 0.4, 1)", r.rect_pts(-10, -3, 20, 6))
+    r.node(t)
+    r.polygon(".", "Lockers", SCENERY, r.rect_pts(0, 0, 400, 200), pos=(100, 416))
+    r.write()
+
+def workshop():
+    r = Room("Workshop", (1, 1), True)
+    fy = r.floor_y
+    r.exit("west", "left")
+    r.exit("east", "right")
+    r.block(T, 300, 80, 24, color=SCENERY)
+    r.block(r.w - T - 80, 200, 80, 24, color=SCENERY)
+    r.spawner("ClingerSpawner1", "Clinger", (T + 40, 300 - 16))
+    r.spawner("ClingerSpawner2", "Clinger", (r.w - T - 40, 200 - 16))
+    r.spawner("ClingerSpawner3", "Clinger", (576, fy - 16))
+    r.vent("Vent", (576, 324), (1088, 584), (1, 0))
+    r.write()
+
 if __name__ == "__main__":
     dock()
     breach()
     blister()
     spine_west()
     shaft()
+    spine_east()
+    vent_room()
+    locker()
+    workshop()
     print("rooms written")
