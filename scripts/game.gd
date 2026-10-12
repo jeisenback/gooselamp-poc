@@ -65,6 +65,7 @@ func enter(room_name: String, exit_name: String) -> void:
 	camera.global_position = player.global_position
 	camera.reset_smoothing()
 	WorldState.visit(room_name)
+	$Map.set_current(room_name)
 	_cooldown = SWAP_COOLDOWN
 
 func _on_exit_crossed(exit: Exit) -> void:
