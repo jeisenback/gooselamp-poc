@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/Enemy.tscn" id="1"]
+[ext_resource type="Script" path="res://scripts/warden.gd" id="2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(100, 100)
+
+[node name="Warden" instance=ExtResource("1")]
+script = ExtResource("2")
+
+[node name="CollisionShape2D" parent="." index="0"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Body" parent="." index="1"]
+polygon = PackedVector2Array(-50, -20, -30, -50, 30, -50, 50, -20, 50, 20, 30, 50, -30, 50, -50, 20)
+
+[node name="Lights" type="Polygon2D" parent="Body" index="0"]
+color = Color(1, 0.95, 0.7, 1)
+polygon = PackedVector2Array(-34, -6, -28, -14, 28, -14, 34, -6, 34, 6, 28, 14, -28, 14, -34, 6, -26, 6, -22, 10, 22, 10, 26, 6, 26, -6, 22, -10, -22, -10, -26, -6)
+
+[node name="CollisionShape2D" parent="Hurt" index="0"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Shards" parent="." index="3"]
+amount = 24
+scale_amount_min = 6.0
+scale_amount_max = 10.0
+
+[node name="Down" type="RayCast2D" parent="." index="4"]
+target_position = Vector2(0, 1000)
+collision_mask = 1
