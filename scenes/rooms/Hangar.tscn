@@ -71,6 +71,20 @@ script = ExtResource("5")
 room_name = "Hangar"
 floor_y = 1912.0
 
+[node name="Interior" type="Node2D" parent="."]
+
+[node name="Fill0" type="Polygon2D" parent="Interior"]
+color = Color(0.02, 0.02, 0.03, 1)
+polygon = PackedVector2Array(32, 32, 1120, 32, 1120, 1912, 32, 1912)
+
+[node name="Fill1" type="Polygon2D" parent="Interior"]
+color = Color(0.02, 0.02, 0.03, 1)
+polygon = PackedVector2Array(0, 1776.0, 32, 1776.0, 32, 1912.0, 0, 1912.0)
+
+[node name="Fill2" type="Polygon2D" parent="Interior"]
+color = Color(0.02, 0.02, 0.03, 1)
+polygon = PackedVector2Array(496, 0, 656, 0, 656, 32, 496, 32)
+
 [node name="Hull" type="StaticBody2D" parent="."]
 collision_layer = 1
 collision_mask = 0

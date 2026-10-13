@@ -65,7 +65,7 @@ func _end_game() -> void:
 		root.remove_child(game)
 		game.free()
 	for child in root.get_children():
-		if child is Room or child is Camera2D:
+		if child is Room or child is Camera2D or child is Section:
 			root.remove_child(child)
 			child.free()
 
@@ -121,7 +121,7 @@ func _required_path() -> void:
 	await _start_game()
 	game.start()
 	await frames(5)
-	check(game.room.room_name == "Dock", "starts in the Dock")
+	check(game.current.room_name == "Dock", "starts in the Dock")
 	await shot("Dock")
 	var path := WorldGraph.REQUIRED_PATH
 	for i in range(path.size() - 1):
@@ -129,23 +129,23 @@ func _required_path() -> void:
 		check(not edge.is_empty(), "an edge from %s to %s" % [path[i], path[i + 1]])
 		if edge.is_empty():
 			return
-		game.enter(edge[0][2], edge[0][3])
+		game.place(edge[0][2], edge[0][3])
 		await frames(5)
-		check(game.room.room_name == path[i + 1], "entered %s" % path[i + 1])
-		match game.room.room_name:
+		check(game.current.room_name == path[i + 1], "entered %s" % path[i + 1])
+		match game.current.room_name:
 			"Blister":
-				var panel: Switch = game.room.find_children("*", "Switch", true, false)[0]
+				var panel: Switch = game.current.find_children("*", "Switch", true, false)[0]
 				await swing_at(panel, 1)
 				check(not WorldState.ring_on, "the Blister's panel stops the ring")
 				await shot("Blister ring off")
 			"Vent Room":
-				var panel: Switch = game.room.find_children("*", "Switch", true, false)[0]
+				var panel: Switch = game.current.find_children("*", "Switch", true, false)[0]
 				await hold([KEY_D], 190) # walk the length of the room to the panel
 				await swing_at(panel, -1)
 				check(WorldState.vents_open, "the Vent Room's panel opens the vents")
 				await shot("Vent Room vents open")
 			"Control Room":
-				var warden := game.room.find_children("*", "Warden", true, false)
+				var warden := game.current.find_children("*", "Warden", true, false)
 				check(warden.size() == 1, "the Warden is there")
 				await shot("Control Room")
 				if warden.size() == 1:
@@ -156,23 +156,28 @@ func _required_path() -> void:
 			"Exit":
 				await hold([KEY_D], 240)
 				check(paused, "the slice ends")
-				var end := game.room.find_children("*", "SliceEnd", true, false)[0]
+				var end := game.current.find_children("*", "SliceEnd", true, false)[0]
 				check(end.get_node("Screen").visible, "the end screen shows")
 				await shot("Exit end")
+			"Workshop":
+				await shot("Workshop")
+				game.place("Workshop", "east") # at the Hangar hatch: the camera looks a third of a screen past it
+				await frames(30)
+				await shot("Workshop east door, Hangar beyond")
 			_:
-				await shot(game.room.room_name)
+				await shot(game.current.room_name)
 
 ## Rest at the Ring Deck airlock, die in the Hangar's gale, wake at the airlock with the switches unchanged.
 func _death_and_respawn() -> void:
 	await _start_game()
-	game.enter("Ring Deck", "east")
+	game.place("Ring Deck", "east")
 	await frames(5)
-	await swing_at(game.room.checkpoint(), 1)
+	await swing_at(game.current.checkpoint(), 1)
 	check(WorldState.checkpoint == "Ring Deck", "rested at the Ring Deck airlock")
 	await shot("rested")
 	WorldState.set_ring(false)
 	WorldState.set_vents(true)
-	game.enter("Hangar", "up")
+	game.place("Hangar", "up")
 	await frames(5)
 	game.player.global_position.y = 400 # in the gale, level with the shredded wall
 	game.player.velocity = Vector2.ZERO
@@ -184,9 +189,9 @@ func _death_and_respawn() -> void:
 	check(game.player.dead, "the gale carried the player into the hazards")
 	await shot("dead")
 	await frames(int(Player.DEATH_DELAY * 60) + 10)
-	check(game.room.room_name == "Ring Deck", "back on the Ring Deck")
+	check(game.current.room_name == "Ring Deck", "back on the Ring Deck")
 	check(not game.player.dead and game.player.health == Player.MAX_HEALTH, "alive and whole")
-	check(game.player.global_position.distance_to(game.room.checkpoint().spawn_point()) < 2.0, "at the airlock")
+	check(game.player.global_position.distance_to(game.current.checkpoint().spawn_point()) < 2.0, "at the airlock (%.1f px off, velocity %s)" % [game.player.global_position.distance_to(game.current.checkpoint().spawn_point()), game.player.velocity])
 	check(not WorldState.ring_on and WorldState.vents_open, "switches as they were left")
 	await shot("respawned")
 

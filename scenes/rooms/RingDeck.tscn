@@ -40,6 +40,24 @@ script = ExtResource("4")
 room_name = "Ring Deck"
 floor_y = 616.0
 
+[node name="Interior" type="Node2D" parent="."]
+
+[node name="Fill0" type="Polygon2D" parent="Interior"]
+color = Color(0.02, 0.02, 0.03, 1)
+polygon = PackedVector2Array(32, 32, 6880, 32, 6880, 616, 32, 616)
+
+[node name="Fill1" type="Polygon2D" parent="Interior"]
+color = Color(0.02, 0.02, 0.03, 1)
+polygon = PackedVector2Array(6880, 480.0, 6912, 480.0, 6912, 616.0, 6880, 616.0)
+
+[node name="Fill2" type="Polygon2D" parent="Interior"]
+color = Color(0.02, 0.02, 0.03, 1)
+polygon = PackedVector2Array(496, 616, 656, 616, 656, 648, 496, 648)
+
+[node name="Fill3" type="Polygon2D" parent="Interior"]
+color = Color(0.02, 0.02, 0.03, 1)
+polygon = PackedVector2Array(6256, 616, 6416, 616, 6416, 648, 6256, 648)
+
 [node name="Hull" type="StaticBody2D" parent="."]
 collision_layer = 1
 collision_mask = 0

@@ -53,3 +53,20 @@ func test_every_edge_s_two_exits_meet_at_the_same_seam() -> void:
 		var b := s.room(e[2]).exit_named(e[3])
 		assert_true(_seam(a).distance_to(_seam(b)) <= 1.0, "%s %s meets %s %s: %s vs %s" % [e[0], e[1], e[2], e[3], _seam(a), _seam(b)])
 		assert_true(a.inward.is_equal_approx(-b.inward), "%s %s faces %s %s" % [e[0], e[1], e[2], e[3]])
+
+## Rooms have no interior fill of their own, so the hull-coloured backdrop
+## showed through them and the walls vanished against it. Every live room
+## fills its interior in the clear colour, through its doorways too, so the
+## backdrop shows only past the hull.
+func test_live_rooms_fill_their_interior_through_their_doorways() -> void:
+	var s := _section()
+	for r in s.rooms():
+		if not r.compartment.plates_live:
+			continue
+		var interior := r.get_node_or_null("Interior")
+		assert_true(interior != null and r.get_child(0) == interior, "%s fills its interior first" % r.room_name)
+		if interior == null:
+			continue
+		assert_eq(interior.get_child_count(), r.exits().size() + 1, "%s: one piece for the room and one per doorway" % r.room_name)
+		for piece in interior.get_children():
+			assert_true(piece is Polygon2D and piece.color.is_equal_approx(Color(0.02, 0.02, 0.03)), "%s: the clear colour" % r.room_name)

@@ -32,6 +32,16 @@ script = ExtResource("2")
 room_name = "Exit"
 floor_y = 616.0
 
+[node name="Interior" type="Node2D" parent="."]
+
+[node name="Fill0" type="Polygon2D" parent="Interior"]
+color = Color(0.02, 0.02, 0.03, 1)
+polygon = PackedVector2Array(32, 32, 1120, 32, 1120, 616, 32, 616)
+
+[node name="Fill1" type="Polygon2D" parent="Interior"]
+color = Color(0.02, 0.02, 0.03, 1)
+polygon = PackedVector2Array(0, 480.0, 32, 480.0, 32, 616.0, 0, 616.0)
+
 [node name="Hull" type="StaticBody2D" parent="."]
 collision_layer = 1
 collision_mask = 0

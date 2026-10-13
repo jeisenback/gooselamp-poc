@@ -32,5 +32,25 @@ func _run() -> void:
 			failures += 1
 		root.remove_child(r)
 		r.free()
+	# The section: both sides of every edge must meet at the same seam in the
+	# pack too, since the export's resource conversion has dropped scene
+	# overrides before.
+	var s := Section.new()
+	root.add_child(s)
+	var seams_ok := true
+	for e in WorldGraph.EDGES:
+		var a: Exit = s.room(e[0]).exit_named(e[1])
+		var b: Exit = s.room(e[2]).exit_named(e[3])
+		var sa := a.global_position - a.inward * 16.0
+		var sb := b.global_position - b.inward * 16.0
+		if sa.distance_to(sb) > 1.0:
+			print("  FAIL  %s %s meets %s %s: %s vs %s" % [e[0], e[1], e[2], e[3], sa, sb])
+			seams_ok = false
+	if seams_ok:
+		print("  ok    section: every doorway meets its neighbour")
+	else:
+		failures += 1
+	root.remove_child(s)
+	s.free()
 	print("%d rooms, %d failed" % [WorldGraph.ROOMS.size(), failures])
 	quit(1 if failures > 0 else 0)

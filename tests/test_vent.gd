@@ -38,3 +38,17 @@ func test_skips_bodies_without_velocity() -> void:
 	WorldState.set_vents(true)
 	await physics_frames(5)
 	assert_true(true, "no script error reached the runner")
+
+## The area's overlap list is a tick stale. A body teleported out of the
+## vent (a respawn) must not take one more push, which in zero-g never decays.
+func test_a_body_teleported_out_is_not_pushed_on_the_stale_tick() -> void:
+	var r := make_room(false)
+	var v := _vent(Vector2(400, 400), Vector2.ZERO)
+	var p := spawn_player(Vector2.ZERO)
+	WorldState.set_vents(true)
+	await physics_frames(3)
+	assert_true(p.velocity.x > 0.0, "pushed while inside")
+	p.global_position = Vector2(-800, 0)
+	p.velocity = Vector2.ZERO
+	await physics_frames(2)
+	assert_eq(p.velocity, Vector2.ZERO, "no push after leaving")

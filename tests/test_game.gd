@@ -218,3 +218,28 @@ func test_place_snaps_the_camera() -> void:
 	await physics_frames(4)
 	var cam := g.get_node("Camera2D") as Camera2D
 	assert_true(g.current.bounds().grow(Section.LOOKAHEAD).has_point(cam.get_screen_center_position()), "no scroll across the section: at %s" % cam.get_screen_center_position())
+
+## The room that killed the player is still there after the respawn, and its
+## hazard's overlap list is a tick stale: the respawned body must not take
+## that hit.
+func test_a_body_killed_in_a_hazard_wakes_whole_at_the_airlock() -> void:
+	var g := _game()
+	g.place("Ring Deck", "east")
+	await physics_frames(2)
+	g.current.checkpoint().rest(g.player)
+	WorldState.set_ring(false)
+	WorldState.set_vents(true)
+	g.place("Hangar", "up")
+	await physics_frames(2)
+	for i in range(4):
+		g.player.invulnerable_for = 0.0
+		g.player.take_hit(Vector2.ZERO)
+	g.player.invulnerable_for = 0.0
+	var shred: Hazard = g.current.find_children("*", "Hazard", true, false)[0]
+	g.player.global_position = shred.global_position
+	g.player.velocity = Vector2.ZERO
+	await physics_frames(4)
+	assert_true(g.player.dead, "the shredded wall killed the player")
+	await physics_frames(frame_count(Player.DEATH_DELAY) + 6)
+	assert_true(not g.player.dead and g.player.health == Player.MAX_HEALTH, "alive and whole, health %d" % g.player.health)
+	assert_true(g.player.global_position.distance_to(g.current.checkpoint().spawn_point()) < 2.0, "at the airlock, not knocked off it")

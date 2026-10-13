@@ -13,6 +13,7 @@ import math, os
 CELL_W, CELL_H = 1152, 648
 T = 32                      # hull thickness
 DOOR = 24                   # how far a door stands proud of the hull, into the room
+CLEAR = "Color(0.02, 0.02, 0.03, 1)"   # the project's clear colour: a live room's interior, through its doorways
 HULL = "Color(0.1, 0.11, 0.13, 1)"
 PLATE = "Color(0.22, 0.19, 0.14, 1)"
 SCENERY = "Color(0.16, 0.17, 0.2, 1)"
@@ -180,6 +181,17 @@ class Room:
             n.append('[node name="Sky" type="Polygon2D" parent="."]\ncolor = Color(0.01, 0.01, 0.02, 1)\npolygon = PackedVector2Array(%s)\n\n' % f([c for p in self.rect_pts(0, 0, self.w, self.h) for c in p]))
             for i, s in enumerate(self.star_field(60, seed=len(self.name))):
                 n.append('[node name="Star%d" type="Polygon2D" parent="."]\ncolor = %s\npolygon = PackedVector2Array(%s)\n\n' % (i, STAR, f([c for p in s for c in p])))
+        # interior: live rooms fill themselves in the clear colour, doorways included, so the
+        # section's hull-coloured backdrop shows only past the hull (dead rooms have their Sky)
+        if self.plates_live:
+            n.append('[node name="Interior" type="Node2D" parent="."]\n\n')
+            pieces = [(T, T, self.w - 2 * T, self.h - 2 * T)]
+            for a, b in self.openings["left"]: pieces.append((0, a, T, b - a))
+            for a, b in self.openings["right"]: pieces.append((self.w - T, a, T, b - a))
+            for a, b in self.openings["top"]: pieces.append((a, 0, b - a, T))
+            for a, b in self.openings["bottom"]: pieces.append((a, self.h - T, b - a, T))
+            for i, (x, y, w, h) in enumerate(pieces):
+                n.append('[node name="Fill%d" type="Polygon2D" parent="Interior"]\ncolor = %s\npolygon = PackedVector2Array(%s)\n\n' % (i, CLEAR, f([c for p in self.rect_pts(x, y, w, h) for c in p])))
         # hull
         n.append('[node name="Hull" type="StaticBody2D" parent="."]\ncollision_layer = 1\ncollision_mask = 0\n\n')
         rects = self.hull_rects() + [(x, y, w, h) for (x, y, w, h, c, nm) in self.extras_hull]

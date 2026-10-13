@@ -40,6 +40,24 @@ script = ExtResource("4")
 room_name = "Spine West"
 floor_y = 616.0
 
+[node name="Interior" type="Node2D" parent="."]
+
+[node name="Fill0" type="Polygon2D" parent="Interior"]
+color = Color(0.02, 0.02, 0.03, 1)
+polygon = PackedVector2Array(32, 32, 2272, 32, 2272, 616, 32, 616)
+
+[node name="Fill1" type="Polygon2D" parent="Interior"]
+color = Color(0.02, 0.02, 0.03, 1)
+polygon = PackedVector2Array(0, 480.0, 32, 480.0, 32, 616.0, 0, 616.0)
+
+[node name="Fill2" type="Polygon2D" parent="Interior"]
+color = Color(0.02, 0.02, 0.03, 1)
+polygon = PackedVector2Array(2272, 260, 2304, 260, 2304, 396, 2272, 396)
+
+[node name="Fill3" type="Polygon2D" parent="Interior"]
+color = Color(0.02, 0.02, 0.03, 1)
+polygon = PackedVector2Array(496, 0, 656, 0, 656, 32, 496, 32)
+
 [node name="Hull" type="StaticBody2D" parent="."]
 collision_layer = 1
 collision_mask = 0

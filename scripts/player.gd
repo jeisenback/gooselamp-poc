@@ -121,10 +121,12 @@ func heal_full() -> void:
 		health = MAX_HEALTH
 		health_changed.emit(health)
 
-## Full health, alive, still, holding nothing, at `at`.
+## Full health, alive, still, holding nothing, at `at`. Briefly invulnerable:
+## whatever killed the body is still in the world, and its overlap list is a
+## tick stale.
 func respawn(at: Vector2) -> void:
 	dead = false
-	invulnerable_for = 0.0
+	invulnerable_for = INVULNERABLE
 	fire_buffered = false
 	velocity = Vector2.ZERO
 	grabbed = false
