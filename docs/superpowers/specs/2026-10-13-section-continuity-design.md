@@ -73,7 +73,7 @@ Shots are parented to Game as today and now carry through doorways.
 
 ## Place and state cues
 
-1. **Locker porthole, live.** The painted miniature is replaced by a `SubViewport` that shares the main `World2D` and holds a `Camera2D` fixed on the Control Room's centre, drawn through a `SubViewportContainer` or a `Sprite2D` with the viewport texture on a 200 by 140 quad in the Locker's east wall, framed as today. The Warden seen is the one fought. Risk: the GL Compatibility renderer and the web build. The plan's first task on this cue is a probe in the web export; if it fails there, keep the painting and note it.
+1. **Locker porthole, live.** The painted miniature is replaced by a `SubViewport` that shares the main `World2D` and holds a `Camera2D` fixed on the Control Room's centre, drawn by a `Sprite2D` carrying the viewport's texture, 200 by 140 px, in the Locker's east wall, framed as today. The Warden seen is the one fought. Risk: the GL Compatibility renderer and the web build. The plan's first task on this cue is a probe in the web export; if it fails there, keep the painting and note it.
 2. **Ring housing that turns.** The Ring Deck's arcs become a `RingHousing` node: a strip of arc segments that slides along the band while `WorldState.ring_on` and stops dead when it is off, by the same rule as `blister.gd`. The Control Room gets the same strip behind its panel. The ring stopping is then seen in the Blister, the Ring Deck and the Control Room.
 3. **Section backdrop.** As above.
 4. **Shared doorway objects.** Hatches, the Shaft's pressure door, the boss door and the Spine West gate are seen from both sides through the lookahead. No work beyond the section scene.
