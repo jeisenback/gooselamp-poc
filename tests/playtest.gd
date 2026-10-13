@@ -139,6 +139,11 @@ func _required_path() -> void:
 				check(not WorldState.ring_on, "the Blister's panel stops the ring")
 				await shot("Blister ring off")
 			"Vent Room":
+				game.place("Locker", "up") # the ring is off and the vents shut: the Locker is open, and its window looks into the Control Room
+				await frames(30)
+				await shot("Locker porthole")
+				game.place("Vent Room", "down")
+				await frames(5)
 				var panel: Switch = game.current.find_children("*", "Switch", true, false)[0]
 				await hold([KEY_D], 190) # walk the length of the room to the panel
 				await swing_at(panel, -1)

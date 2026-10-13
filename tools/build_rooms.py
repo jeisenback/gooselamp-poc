@@ -341,17 +341,8 @@ def locker():
     r.exit("up", "top", 300)
     r.state_block("VentsOpen", "HatchShut", 220, 0, 160, T + DOOR, color=SCENERY)
     r.state_block("RingOn", "CabinetAbove", 220, 0, 160, T + DOOR, color=SCENERY)
-    # the view port into the Control Room: a window with a painted miniature and a still Warden
-    t = '[node name="ViewPort" type="Node2D" parent="."]\nposition = Vector2(980, 300)\n\n'
-    def poly(name, color, pts):
-        return '[node name="%s" type="Polygon2D" parent="ViewPort"]\ncolor = %s\npolygon = PackedVector2Array(%s)\n\n' % (name, color, f([c for p in pts for c in p]))
-    t += poly("Frame", SCENERY, r.rect_pts(-110, -80, 220, 160))
-    t += poly("Glass", "Color(0.05, 0.06, 0.09, 1)", r.rect_pts(-100, -70, 200, 140))
-    t += poly("FarFloor", HULL, r.rect_pts(-100, 50, 200, 20))
-    t += poly("Panel", "Color(0.35, 0.32, 0.2, 1)", r.rect_pts(-90, 30, 8, 20))
-    t += poly("Warden", "Color(0.45, 0.16, 0.1, 1)", [(-20, -8), (-12, -20), (12, -20), (20, -8), (20, 8), (12, 20), (-12, 20), (-20, 8)])
-    t += poly("WardenLights", "Color(0.6, 0.55, 0.4, 1)", r.rect_pts(-10, -3, 20, 6))
-    r.node(t)
+    # the view port into the Control Room: a live window, a second camera on the room itself
+    r.instance("ViewPort", "res://scenes/Porthole.tscn", props={"position": "Vector2(980, 300)"})
     r.polygon(".", "Lockers", SCENERY, r.rect_pts(0, 0, 400, 200), pos=(100, 416))
     r.write()
 

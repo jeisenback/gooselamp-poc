@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/porthole.gd" id="1"]
+
+[node name="Porthole" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Frame" type="Polygon2D" parent="."]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(-110, -80, 110, -80, 110, 80, -110, 80)
+
+[node name="SubViewport" type="SubViewport" parent="."]
+disable_3d = true
+size = Vector2i(200, 140)
+render_target_update_mode = 4
+
+[node name="Camera2D" type="Camera2D" parent="SubViewport"]
+zoom = Vector2(0.175, 0.175)
+
+[node name="Glass" type="Sprite2D" parent="."]
