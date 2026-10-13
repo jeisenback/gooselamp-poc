@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/Switch.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/Vent.tscn" id="2"]
@@ -10,10 +10,10 @@
 size = Vector2(576.0, 584.0)
 
 [sub_resource type="RectangleShape2D" id="sub_2"]
-size = Vector2(32.0, 480.0)
+size = Vector2(32.0, 260.0)
 
 [sub_resource type="RectangleShape2D" id="sub_3"]
-size = Vector2(32.0, 32.0)
+size = Vector2(32.0, 252.0)
 
 [sub_resource type="RectangleShape2D" id="sub_4"]
 size = Vector2(32.0, 480.0)
@@ -31,15 +31,24 @@ size = Vector2(220.0, 32.0)
 size = Vector2(772.0, 32.0)
 
 [sub_resource type="RectangleShape2D" id="sub_9"]
-size = Vector2(40.0, 4.0)
+size = Vector2(80.0, 24.0)
 
 [sub_resource type="RectangleShape2D" id="sub_10"]
-size = Vector2(1152.0, 648.0)
+size = Vector2(80.0, 24.0)
 
 [sub_resource type="RectangleShape2D" id="sub_11"]
-size = Vector2(160.0, 56.0)
+size = Vector2(80.0, 24.0)
 
 [sub_resource type="RectangleShape2D" id="sub_12"]
+size = Vector2(40.0, 4.0)
+
+[sub_resource type="RectangleShape2D" id="sub_13"]
+size = Vector2(1152.0, 648.0)
+
+[sub_resource type="RectangleShape2D" id="sub_14"]
+size = Vector2(160.0, 56.0)
+
+[sub_resource type="RectangleShape2D" id="sub_15"]
 size = Vector2(160.0, 100.0)
 
 
@@ -53,20 +62,20 @@ collision_layer = 1
 collision_mask = 0
 
 [node name="Wall0" type="CollisionShape2D" parent="Hull"]
-position = Vector2(16.0, 240.0)
+position = Vector2(16.0, 130.0)
 shape = SubResource("sub_2")
 
 [node name="WallArt0" type="Polygon2D" parent="Hull"]
 color = Color(0.1, 0.11, 0.13, 1)
-polygon = PackedVector2Array(0, 0.0, 32, 0.0, 32, 480.0, 0, 480.0)
+polygon = PackedVector2Array(0, 0.0, 32, 0.0, 32, 260.0, 0, 260.0)
 
 [node name="Wall1" type="CollisionShape2D" parent="Hull"]
-position = Vector2(16.0, 632.0)
+position = Vector2(16.0, 522.0)
 shape = SubResource("sub_3")
 
 [node name="WallArt1" type="Polygon2D" parent="Hull"]
 color = Color(0.1, 0.11, 0.13, 1)
-polygon = PackedVector2Array(0, 616.0, 32, 616.0, 32, 648.0, 0, 648.0)
+polygon = PackedVector2Array(0, 396, 32, 396, 32, 648, 0, 648)
 
 [node name="Wall2" type="CollisionShape2D" parent="Hull"]
 position = Vector2(1136.0, 240.0)
@@ -108,11 +117,35 @@ shape = SubResource("sub_8")
 color = Color(0.1, 0.11, 0.13, 1)
 polygon = PackedVector2Array(380, 616, 1152, 616, 1152, 648, 380, 648)
 
-[node name="Wall7" type="CollisionShape2D" parent="Hull"]
-position = Vector2(900.0, 574.0)
+[node name="Step0" type="CollisionShape2D" parent="Hull"]
+position = Vector2(72.0, 555.0)
 shape = SubResource("sub_9")
 
 [node name="WallArt7" type="Polygon2D" parent="Hull"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(32, 543, 112, 543, 112, 567, 32, 567)
+
+[node name="Step1" type="CollisionShape2D" parent="Hull"]
+position = Vector2(190.0, 482.0)
+shape = SubResource("sub_10")
+
+[node name="WallArt8" type="Polygon2D" parent="Hull"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(150, 470, 230, 470, 230, 494, 150, 494)
+
+[node name="Step2" type="CollisionShape2D" parent="Hull"]
+position = Vector2(72.0, 409.0)
+shape = SubResource("sub_11")
+
+[node name="WallArt9" type="Polygon2D" parent="Hull"]
+color = Color(0.16, 0.17, 0.2, 1)
+polygon = PackedVector2Array(32, 397, 112, 397, 112, 421, 32, 421)
+
+[node name="PanelShelf" type="CollisionShape2D" parent="Hull"]
+position = Vector2(900.0, 574.0)
+shape = SubResource("sub_12")
+
+[node name="WallArt10" type="Polygon2D" parent="Hull"]
 color = Color(0.16, 0.17, 0.2, 1)
 polygon = PackedVector2Array(880, 572.0, 920, 572.0, 920, 576.0, 880, 576.0)
 
@@ -126,7 +159,7 @@ plates_live = true
 room_name = "Vent Room"
 
 [node name="Bounds" parent="Compartment" index="0"]
-shape = SubResource("sub_10")
+shape = SubResource("sub_13")
 
 [node name="Tint" type="Polygon2D" parent="Compartment"]
 color = Color(1, 0.72, 0.4, 0.1)
@@ -141,7 +174,7 @@ collision_mask = 0
 
 [node name="Shape" type="CollisionShape2D" parent="Compartment/VentsOpen/HatchShut"]
 position = Vector2(300.0, 620.0)
-shape = SubResource("sub_11")
+shape = SubResource("sub_14")
 
 [node name="Art" type="Polygon2D" parent="Compartment/VentsOpen/HatchShut"]
 color = Color(0.16, 0.17, 0.2, 1)
@@ -167,7 +200,7 @@ collision_mask = 0
 
 [node name="Shape" type="CollisionShape2D" parent="Compartment/RingOn/Cabinet"]
 position = Vector2(300.0, 566.0)
-shape = SubResource("sub_12")
+shape = SubResource("sub_15")
 
 [node name="Art" type="Polygon2D" parent="Compartment/RingOn/Cabinet"]
 color = Color(0.16, 0.17, 0.2, 1)
@@ -187,7 +220,7 @@ polygon = PackedVector2Array(480, 140, 620, 140, 620, 230, 480, 230)
 [node name="Exits" type="Node2D" parent="."]
 
 [node name="west" parent="Exits" instance=ExtResource("5")]
-position = Vector2(16.0, 548.0)
+position = Vector2(16.0, 328.0)
 rotation = 0.0
 exit_name = "west"
 inward = Vector2(1, 0)

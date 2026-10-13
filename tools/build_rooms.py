@@ -184,9 +184,10 @@ class Room:
         n.append('[node name="Hull" type="StaticBody2D" parent="."]\ncollision_layer = 1\ncollision_mask = 0\n\n')
         rects = self.hull_rects() + [(x, y, w, h) for (x, y, w, h, c, nm) in self.extras_hull]
         colors = [HULL] * len(self.hull_rects()) + [c for (x, y, w, h, c, nm) in self.extras_hull]
-        for i, ((x, y, w, h), color) in enumerate(zip(rects, colors)):
+        names = [None] * len(self.hull_rects()) + [nm for (x, y, w, h, c, nm) in self.extras_hull]
+        for i, ((x, y, w, h), color, nm) in enumerate(zip(rects, colors, names)):
             shape = self.rect_shape(w, h)
-            n.append('[node name="Wall%d" type="CollisionShape2D" parent="Hull"]\nposition = Vector2(%s, %s)\nshape = %s\n\n' % (i, f(x + w / 2), f(y + h / 2), shape))
+            n.append('[node name="%s" type="CollisionShape2D" parent="Hull"]\nposition = Vector2(%s, %s)\nshape = %s\n\n' % (nm or "Wall%d" % i, f(x + w / 2), f(y + h / 2), shape))
             n.append('[node name="WallArt%d" type="Polygon2D" parent="Hull"]\ncolor = %s\npolygon = PackedVector2Array(%s)\n\n' % (i, color, f([c for p in self.rect_pts(x, y, w, h) for c in p])))
         if self.plates_live and self.floor_segments is None:
             n.append('[node name="PlateArt" type="Polygon2D" parent="Hull"]\ncolor = %s\npolygon = PackedVector2Array(%s)\n\n' % (PLATE, f([c for p in self.rect_pts(T, self.floor_y, self.w - 2 * T, 6) for c in p])))
@@ -234,7 +235,7 @@ def dock():
 def breach():
     r = Room("Breach", (1, 1), False)
     r.exit("west", "left", 324)
-    r.exit("east", "right", 324)
+    r.exit("east", "right")                    # at the Dock's floor level: the two open as one doorway
     # three drifting hull fragments to grab, mites on their top faces
     for i, (x, y, w, h) in enumerate([(220, 160, 220, 90), (560, 400, 260, 80), (800, 120, 180, 110)]):
         r.block(x, y, w, h, color=SCENERY, name="Fragment%d" % i)
@@ -256,7 +257,9 @@ def spine_west():
     fy = r.floor_y
     r.exit("west", "left")
     r.exit("up", "top", 576)
-    r.exit("east", "right", fy - 230)          # Spine East's floor is higher: a drop from there, flight from here
+    # Spine East's floor-level door, 328: the doorway's bottom at 396 sits above the gate's top at 416,
+    # and the floor is 220 px below it. A drop from there in any state; flight from here, never a jump.
+    r.exit("east", "right", 328)
     # the fallen gate: solid floor to 200 px up with the ring on, floating clear with it off
     r.state_block("RingOn", "Gate", 2200, fy - 200, 72, 200, color=SCENERY)
     r.state_block("RingOff", "GateAdrift", 2140, 60, 200, 60, color=SCENERY, collide=False)
@@ -298,9 +301,14 @@ def spine_east():
 def vent_room():
     r = Room("Vent Room", (1, 1), True)
     fy = r.floor_y
-    r.exit("west", "left")
+    r.exit("west", "left", 328)                # Spine East's floor-level door, 220 px above this floor
     r.exit("down", "bottom", 300)
     r.exit("east", "right")
+    # three steps up to the west door, a zigzag so none sits within a body height of the one below,
+    # clear of the cabinet at x 220 to 380
+    r.block(32, 543, 80, 24, color=SCENERY, name="Step0")
+    r.block(150, 470, 80, 24, color=SCENERY, name="Step1")
+    r.block(32, 397, 80, 24, color=SCENERY, name="Step2")
     r.switch("VentsPanel", "vents", (900, fy - 20))
     r.block(880, fy - 44, 40, 4, color=SCENERY, name="PanelShelf")
     # the floor hatch: shut while the vents blow, open while they are still
@@ -386,7 +394,7 @@ def ring_deck():
     r.write()
 
 def control_room():
-    r = Room("Control Room", (1, 2), True)   # two cells tall in the scene (room for the Warden's hover), one on the map
+    r = Room("Control Room", (1, 1), True)
     fy = r.floor_y
     r.exit("west", "left")
     r.exit("east", "right")

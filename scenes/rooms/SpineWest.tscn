@@ -14,10 +14,10 @@ size = Vector2(32.0, 480.0)
 size = Vector2(32.0, 32.0)
 
 [sub_resource type="RectangleShape2D" id="sub_3"]
-size = Vector2(32.0, 318.0)
+size = Vector2(32.0, 260.0)
 
 [sub_resource type="RectangleShape2D" id="sub_4"]
-size = Vector2(32.0, 194.0)
+size = Vector2(32.0, 252.0)
 
 [sub_resource type="RectangleShape2D" id="sub_5"]
 size = Vector2(496.0, 32.0)
@@ -61,20 +61,20 @@ color = Color(0.1, 0.11, 0.13, 1)
 polygon = PackedVector2Array(0, 616.0, 32, 616.0, 32, 648.0, 0, 648.0)
 
 [node name="Wall2" type="CollisionShape2D" parent="Hull"]
-position = Vector2(2288.0, 159.0)
+position = Vector2(2288.0, 130.0)
 shape = SubResource("sub_3")
 
 [node name="WallArt2" type="Polygon2D" parent="Hull"]
 color = Color(0.1, 0.11, 0.13, 1)
-polygon = PackedVector2Array(2272, 0.0, 2304, 0.0, 2304, 318.0, 2272, 318.0)
+polygon = PackedVector2Array(2272, 0.0, 2304, 0.0, 2304, 260.0, 2272, 260.0)
 
 [node name="Wall3" type="CollisionShape2D" parent="Hull"]
-position = Vector2(2288.0, 551.0)
+position = Vector2(2288.0, 522.0)
 shape = SubResource("sub_4")
 
 [node name="WallArt3" type="Polygon2D" parent="Hull"]
 color = Color(0.1, 0.11, 0.13, 1)
-polygon = PackedVector2Array(2272, 454.0, 2304, 454.0, 2304, 648.0, 2272, 648.0)
+polygon = PackedVector2Array(2272, 396, 2304, 396, 2304, 648, 2272, 648)
 
 [node name="Wall4" type="CollisionShape2D" parent="Hull"]
 position = Vector2(248.0, 16.0)
@@ -157,7 +157,7 @@ exit_name = "up"
 inward = Vector2(0, 1)
 
 [node name="east" parent="Exits" instance=ExtResource("6")]
-position = Vector2(2288.0, 386.0)
+position = Vector2(2288.0, 328.0)
 rotation = 0.0
 exit_name = "east"
 inward = Vector2(-1, 0)

@@ -31,7 +31,9 @@ func test_control_room_holds_panel_one_the_warden_and_the_door() -> void:
 	await physics_frames(1)
 	assert_eq(r.find_children("*", "Switch", true, false)[0].switch_name, "ring", "panel one")
 	assert_true(r.find_children("*", "Spawner", true, false)[0].spawned is Warden, "the Warden")
-	assert_true(r.bounds().size.y >= 600.0 + 64.0, "room for the hover height")
+	assert_true(r.bounds().size.is_equal_approx(Vector2(1152, 648)), "one cell, as on the map")
+	var warden := r.find_children("*", "Spawner", true, false)[0]
+	assert_true(warden.position.y <= r.floor_y - Warden.HOVER_HEIGHT and warden.position.y >= Warden.HALF_SIZE + 32.0, "the hover fits")
 	var door := _first_shape(r.get_node("Compartment/BossAlive"))
 	assert_true(not door.disabled, "door shut")
 	WorldState.set_boss_down()

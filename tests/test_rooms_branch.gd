@@ -41,3 +41,15 @@ func test_locker_is_quiet_and_has_the_view_port() -> void:
 	await physics_frames(1)
 	assert_true(r.find_children("*", "Spawner", true, false).is_empty(), "no enemies")
 	assert_true(r.get_node_or_null("ViewPort") != null, "the secret")
+
+func test_vent_room_steps_climb_to_spine_east_s_door() -> void:
+	var r := _room("VentRoom")
+	var door_bottom := r.exit_named("west").global_position.y + 68.0
+	var last_top := r.floor_y
+	for i in range(3):
+		var step := r.get_node("Hull/Step%d" % i) as CollisionShape2D
+		var top := step.position.y - (step.shape as RectangleShape2D).size.y / 2.0
+		assert_true(last_top - top >= 60.0 and last_top - top <= 80.0, "step %d rises %f" % [i, last_top - top])
+		assert_true((step.shape as RectangleShape2D).size.x >= 80.0, "step %d is wide enough to land on" % i)
+		last_top = top
+	assert_true(absf(last_top - door_bottom) <= 8.0, "the top step is the door's sill")
