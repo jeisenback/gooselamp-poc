@@ -71,8 +71,8 @@ func behave(delta: float) -> void:
 			_repair(delta)
 		State.WINDUP:
 			velocity = Vector2.ZERO
-			if _timer <= 0.0:
-				var to_player := (player.global_position - global_position) if player != null else Vector2(_charge_direction.x, 0)
+			if _timer <= 0.0 and player != null: # nobody in the room: hold, never charge at a stale direction
+				var to_player := player.global_position - global_position
 				_charge_direction = to_player.normalized() if to_player != Vector2.ZERO else Vector2.RIGHT
 				_enter(State.CHARGE)
 		State.CHARGE:

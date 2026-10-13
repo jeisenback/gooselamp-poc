@@ -16,14 +16,15 @@ static var visited: PackedStringArray = []
 static var version: int = 0               # bumps on every change; rooms poll it
 static var path_override: String = ""     # tests save here instead of SAVE_PATH
 
-## The start state, version 0.
+## The start state. A change like any other: the version bumps, never
+## returns to 0, so a room that saw an earlier number re-applies.
 static func reset() -> void:
 	ring_on = true
 	vents_open = false
 	boss_down = false
 	checkpoint = ""
 	visited = []
-	version = 0
+	version += 1
 
 static func set_ring(on: bool) -> void:
 	if ring_on != on:

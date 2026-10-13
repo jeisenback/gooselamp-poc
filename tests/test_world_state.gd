@@ -7,13 +7,27 @@ func test_start_state() -> void:
 	assert_true(not WorldState.boss_down, "boss alive")
 	assert_eq(WorldState.checkpoint, "", "no checkpoint")
 	assert_eq(WorldState.visited.size(), 0, "nothing visited")
-	assert_eq(WorldState.version, 0, "version 0")
+
+## Rooms re-apply when the version differs from the one they last saw. A
+## reset that returned to version 0 let a reset followed by the same flips
+## land on a number a room had already seen, and the room kept stale doors.
+func test_reset_is_a_change_the_version_never_repeats() -> void:
+	WorldState.reset()
+	var seen := [WorldState.version]
+	WorldState.set_ring(false)
+	seen.append(WorldState.version)
+	WorldState.reset()
+	assert_true(not seen.has(WorldState.version), "a reset bumps the version, got %d after %s" % [WorldState.version, seen])
+	seen.append(WorldState.version)
+	WorldState.set_ring(false)
+	assert_true(not seen.has(WorldState.version), "the flips after it never repeat a number, got %d after %s" % [WorldState.version, seen])
 
 func test_setters_bump_version_only_on_change() -> void:
+	var v0 := WorldState.version
 	WorldState.set_ring(true)
-	assert_eq(WorldState.version, 0, "same value: no bump")
+	assert_eq(WorldState.version, v0, "same value: no bump")
 	WorldState.set_ring(false)
-	assert_eq(WorldState.version, 1, "changed: bump")
+	assert_eq(WorldState.version, v0 + 1, "changed: bump")
 	WorldState.flip("vents")
 	assert_true(WorldState.vents_open, "flip opens")
 	assert_eq(WorldState.switch_state("vents"), true, "switch_state reads it")
@@ -21,7 +35,7 @@ func test_setters_bump_version_only_on_change() -> void:
 	WorldState.visit("Dock")
 	WorldState.visit("Dock")
 	assert_eq(WorldState.visited.size(), 1, "visit is idempotent")
-	assert_eq(WorldState.version, 3, "ring, vents, one visit")
+	assert_eq(WorldState.version, v0 + 3, "ring, vents, one visit")
 
 func test_save_and_load_round_trip() -> void:
 	WorldState.set_ring(false)

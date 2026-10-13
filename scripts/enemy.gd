@@ -15,11 +15,16 @@ var health: int = MAX_HEALTH
 var staggered_for: float = 0.0
 var tracker := CompartmentTracker.new()
 var dead: bool = false
+var home: Room = null       # the room this spawned in; an enemy never hunts outside it
 
 func _ready() -> void:
 	add_to_group(Groups.HITTABLE)
 	add_to_group(Groups.ENEMY)
 	add_to_group(Groups.BOUNCY)
+	var node := get_parent()
+	while node != null and not node is Room:
+		node = node.get_parent()
+	home = node as Room
 
 func _physics_process(delta: float) -> void:
 	if dead:
@@ -92,11 +97,15 @@ func die() -> void:
 	died.emit()
 	queue_free()
 
-## The nearest player, or null.
+## The nearest player inside the home room, or null. The section is one
+## scene with shared doorways: pursuit across it would walk an enemy out of
+## its room, the Warden out of its arena.
 func nearest_player() -> Player:
 	var best: Player = null
 	var best_distance := INF
 	for node in get_tree().get_nodes_in_group(Groups.PLAYER):
+		if home != null and not home.bounds().has_point(node.global_position):
+			continue
 		var d: float = global_position.distance_to(node.global_position)
 		if d < best_distance:
 			best = node

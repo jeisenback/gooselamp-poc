@@ -17,6 +17,9 @@ func behave(delta: float) -> void:
 	# Knockback is a one-frame shove, never a lasting velocity: the mite stays stuck.
 	global_position += velocity * delta
 	velocity = Vector2.ZERO
+	# Surfaces run on through doorways into the next room; a mite turns back at its room's edge.
+	if home != null and not home.bounds().grow(-RADIUS).has_point(global_position + tangent() * SPEED * delta):
+		turn = -turn
 	var collision := move_and_collide(tangent() * SPEED * delta)
 	if collision != null:
 		normal = collision.get_normal() # a concave corner: turn up the next face

@@ -146,6 +146,7 @@ func test_every_gated_edge_is_shut_when_its_needs_fail() -> void:
 			g.player.heal_full() # each edge on its own: mites met on earlier pushes do not carry over
 			g.place(e[0], e[1])
 			await physics_frames(2)
+			g.backstops = 0
 			var room := g.current
 			var exit := room.exit_named(e[1])
 			var inward: Vector2 = exit.inward
@@ -160,13 +161,23 @@ func test_every_gated_edge_is_shut_when_its_needs_fail() -> void:
 			g.player.velocity = -inward * 220.0
 			g.player.input_override.aim = -inward
 			g.player.input_override.grab_held = false
+			var last := g.player.global_position
+			var biggest := 0.0
 			for i in range(frame_count(0.6)):
+				g.player.input_override.jump_pressed = i % 20 == 0 # in gravity, jump at the door: the lock must be taller than the jump
+				g.player.input_override.jump_held = i % 20 < 8
 				await physics_frames(1)
+				biggest = maxf(biggest, g.player.global_position.distance_to(last))
+				last = g.player.global_position
 				if g.player.in_zero_g():
 					g.player.velocity = -inward * 220.0
+			g.player.input_override.jump_pressed = false
+			g.player.input_override.jump_held = false
 			var label := "%s %s with ring_on=%s vents_open=%s boss_down=%s" % [e[0], e[1], state.ring_on, state.vents_open, state.boss_down]
 			assert_eq(g.current.room_name, e[0], "%s: stays in the room" % label)
 			assert_true(room.bounds().grow(-40.0).has_point(g.player.global_position), "%s: held well inside, at %s" % [label, g.player.global_position])
+			assert_eq(g.backstops, 0, "%s: held by the door, never by the backstop" % label)
+			assert_true(biggest < 40.0, "%s: no teleport of any kind (biggest step %f)" % [label, biggest])
 			assert_true(not g.player.dead, "%s: survived the push" % label)
 			g.player.input_override.aim = Vector2.ZERO
 
@@ -243,3 +254,37 @@ func test_a_body_killed_in_a_hazard_wakes_whole_at_the_airlock() -> void:
 	await physics_frames(frame_count(Player.DEATH_DELAY) + 6)
 	assert_true(not g.player.dead and g.player.health == Player.MAX_HEALTH, "alive and whole, health %d" % g.player.health)
 	assert_true(g.player.global_position.distance_to(g.current.checkpoint().spawn_point()) < 2.0, "at the airlock, not knocked off it")
+
+## Every spawner is live from the start and doorways are shared. An enemy
+## must stay in the room it spawned in: the Warden in its arena, drones out
+## of the Locker. With the ring off the Warden charges at the nearest
+## player; across the section that pursuit funnelled it out of the Control
+## Room's floor-level door within fifteen seconds.
+func test_enemies_stay_in_their_rooms_while_the_player_is_elsewhere() -> void:
+	var g := _game()
+	WorldState.set_ring(false)
+	g.place("Locker", "")
+	g.player.global_position = g.current.bounds().get_center()
+	await physics_frames(frame_count(20.0))
+	for enemy in tree.get_nodes_in_group(Groups.ENEMY):
+		var home: Room = enemy.home
+		assert_true(home != null, "%s has a home" % enemy.name)
+		if home != null:
+			assert_true(home.bounds().has_point(enemy.global_position), "%s stayed in %s, is at %s" % [enemy.name, home.room_name, enemy.global_position])
+	var warden := g.section.room("Control Room").find_children("*", "Warden", true, false)
+	assert_true(warden.size() == 1 and g.section.room("Control Room").bounds().has_point(warden[0].global_position), "the Warden is in its arena")
+
+## Standing in Spine East's own doorway, the body is inside the shut exit's
+## area on the Spine West side. It is not a leak and must not be set back.
+func test_standing_in_a_neighbour_s_doorway_is_not_a_leak() -> void:
+	var g := _game()
+	g.place("Spine East", "west")
+	await physics_frames(2)
+	var room := g.current
+	g.player.global_position = Vector2(room.global_position.x + 24.0, room.global_position.y + room.floor_y - 24.0) # in the hull band, on Spine East's floor
+	g.player.velocity = Vector2.ZERO
+	await physics_frames(2)
+	var at := g.player.global_position
+	await physics_frames(6)
+	assert_eq(g.current.room_name, "Spine East", "still Spine East")
+	assert_true(g.player.global_position.distance_to(at) < 1.0, "left where they stood, moved %f" % g.player.global_position.distance_to(at))

@@ -11,6 +11,8 @@ var section: Section
 var current: Room = null
 var player: Player
 var _camera_reset_ticks: int = 0            # after a teleport: ticks left of snapping the camera to the body
+var _centre_room: Room = null               # the room whose bounds hold the body's centre, for the backstop
+var backstops: int = 0                      # how often the backstop has set the player back; the door tests expect never
 
 @onready var camera: Camera2D = $Camera2D
 
@@ -21,13 +23,11 @@ func _ready() -> void:
 	section = Section.new()
 	add_child(section)
 	move_child(section, 0) # drawn under the player
-	for r in section.rooms():
-		for e in r.exits():
-			e.crossed.connect(_on_exit_crossed.bind(r))
 	if get_tree().current_scene == self:
 		start.call_deferred() # launched as the main scene; tests call start() or place() themselves
 
 func _physics_process(_delta: float) -> void:
+	_backstop()
 	camera.global_position = player.global_position
 	_sync_current() # the new room's limits first, so a reset lands inside them
 	if _camera_reset_ticks > 0:
@@ -103,30 +103,41 @@ func place(room_name: String, exit_name: String) -> void:
 	# build never did for the first room, leaving the Dock in zero-g).
 	player.tracker.compartments.clear()
 	player.enter_compartment(r.compartment)
+	_centre_room = r
 	current = null
 	_sync_current()
 	player.reset_physics_interpolation() # no smear from where the player was
 	_snap_camera()
 
+## The room whose bounds hold a point. Rooms touch without overlapping, so
+## there is at most one.
+func _room_at(point: Vector2) -> Room:
+	for r in section.rooms():
+		if r.bounds().has_point(point):
+			return r
+	return null
+
 ## The backstop: the doors hold the player, but a gap in the geometry can
-## never cross an edge the graph forbids. A leak is a body whose centre is
-## past the hull's outer face and still moving out; it is set back inside
-## the doorway. In a shared doorway the body overlaps both rooms' exits, so
-## a body arriving through the open direction of a one-way edge is moving
-## inward for the shut exit and is left alone.
-func _on_exit_crossed(exit: Exit, room: Room) -> void:
+## never cross an edge the graph forbids. A leak is the body's centre moving
+## from one room's bounds into a neighbour's along an edge the state shuts;
+## the body is set back inside the doorway it left by. Standing in a shared
+## doorway, or arriving through the open direction of a one-way edge, moves
+## the centre along no shut edge and is left alone.
+func _backstop() -> void:
 	if player.dead:
 		return
-	var edge := WorldGraph.edge(room.room_name, exit.exit_name)
-	if edge.is_empty():
+	var now := _room_at(player.global_position)
+	if now == null or now == _centre_room:
 		return
-	var state := {"ring_on": WorldState.ring_on, "vents_open": WorldState.vents_open, "boss_down": WorldState.boss_down}
-	if WorldGraph.allows(edge[4], state):
-		return
-	var depth := (player.global_position - exit.global_position).dot(exit.inward) # negative: outward of the hull's centre
-	if depth < -16.0 and player.velocity.dot(exit.inward) <= 0.0:
-		player.global_position = exit.arrival_point()
-		player.velocity = Vector2.ZERO
+	if _centre_room != null:
+		var state := {"ring_on": WorldState.ring_on, "vents_open": WorldState.vents_open, "boss_down": WorldState.boss_down}
+		for e in WorldGraph.EDGES:
+			if e[0] == _centre_room.room_name and e[2] == now.room_name and not WorldGraph.allows(e[4], state):
+				player.global_position = _centre_room.exit_named(e[1]).arrival_point()
+				player.velocity = Vector2.ZERO
+				backstops += 1
+				return
+	_centre_room = now
 
 ## Loads the save, presets switches from launch options, places the player
 ## at the checkpoint (or the Dock), and shows the title once per launch.
@@ -150,5 +161,6 @@ func _checkpoint_for(room_name: String) -> Checkpoint:
 	var r := section.room(room_name if has_room(room_name) else WorldGraph.START)
 	player.tracker.compartments.clear()
 	player.enter_compartment(r.compartment)
+	_centre_room = r
 	_camera_reset_ticks = 2
 	return r.checkpoint()
