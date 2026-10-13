@@ -169,3 +169,52 @@ func test_every_gated_edge_is_shut_when_its_needs_fail() -> void:
 			assert_true(room.bounds().grow(-40.0).has_point(g.player.global_position), "%s: held well inside, at %s" % [label, g.player.global_position])
 			assert_true(not g.player.dead, "%s: survived the push" % label)
 			g.player.input_override.aim = Vector2.ZERO
+
+func test_camera_limits_look_past_doors_only() -> void:
+	var g := _game()
+	g.place("Dock", "")
+	var b := g.current.bounds()
+	var cam := g.get_node("Camera2D") as Camera2D
+	assert_eq(cam.limit_left, int(b.position.x - Section.LOOKAHEAD), "west door")
+	assert_eq(cam.limit_right, int(b.end.x + Section.LOOKAHEAD), "east door")
+	assert_eq(cam.limit_top, int(b.position.y), "no door above")
+	assert_eq(cam.limit_bottom, int(b.end.y), "no door below")
+
+func test_a_room_change_scrolls_the_camera() -> void:
+	var g := _game()
+	g.place("Dock", "west")
+	await physics_frames(2)
+	var cam := g.get_node("Camera2D") as Camera2D
+	g.player.velocity = Vector2(-150, 0)
+	g.player.input_override.aim = Vector2.LEFT
+	while g.current.room_name == "Dock":
+		await physics_frames(1)
+	var breach := g.current.bounds()
+	await physics_frames(1)
+	assert_true(cam.get_screen_center_position().x > breach.end.x + Section.LOOKAHEAD - 576.0, "one frame in, still looking from the Dock's side")
+	await physics_frames(frame_count(2.0))
+	assert_true(cam.get_screen_center_position().x <= breach.end.x + Section.LOOKAHEAD - 576.0 + 1.0, "two seconds in, inside the Breach's limits")
+
+func test_respawn_does_not_scroll_across_the_section() -> void:
+	var g := _game()
+	g.place("Ring Deck", "east")
+	await physics_frames(2)
+	g.current.checkpoint().rest(g.player)
+	g.place("Hangar", "west")
+	await physics_frames(2)
+	for i in range(5):
+		g.player.invulnerable_for = 0.0
+		g.player.take_hit(Vector2.ZERO)
+	await physics_frames(frame_count(Player.DEATH_DELAY) + 6)
+	var cam := g.get_node("Camera2D") as Camera2D
+	assert_eq(g.current.room_name, "Ring Deck", "back at the airlock")
+	assert_true(g.current.bounds().grow(Section.LOOKAHEAD).has_point(cam.get_screen_center_position()), "the camera is there too, within a few ticks, not a scroll: at %s" % cam.get_screen_center_position())
+
+func test_place_snaps_the_camera() -> void:
+	var g := _game()
+	g.place("Hangar", "west")
+	await physics_frames(3)
+	g.place("Ring Deck", "east")
+	await physics_frames(4)
+	var cam := g.get_node("Camera2D") as Camera2D
+	assert_true(g.current.bounds().grow(Section.LOOKAHEAD).has_point(cam.get_screen_center_position()), "no scroll across the section: at %s" % cam.get_screen_center_position())

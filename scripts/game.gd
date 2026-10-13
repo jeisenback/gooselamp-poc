@@ -10,7 +10,7 @@ const ROOMS_DIR := "res://scenes/rooms/"
 var section: Section
 var current: Room = null
 var player: Player
-var _camera_reset_pending: bool = false     # a teleport someone else performs (the respawn): reset the camera after it
+var _camera_reset_ticks: int = 0            # after a teleport: ticks left of snapping the camera to the body
 
 @onready var camera: Camera2D = $Camera2D
 
@@ -29,11 +29,20 @@ func _ready() -> void:
 
 func _physics_process(_delta: float) -> void:
 	camera.global_position = player.global_position
-	if _camera_reset_pending:
-		_camera_reset_pending = false
+	_sync_current() # the new room's limits first, so a reset lands inside them
+	if _camera_reset_ticks > 0:
+		_camera_reset_ticks -= 1
 		camera.reset_smoothing()
 		camera.reset_physics_interpolation()
-	_sync_current()
+
+## A teleport (place, respawn) must not be smoothed across the section. The
+## camera's own update has to see the new position once before a reset
+## sticks, so the snap is asked for on this tick and the next.
+func _snap_camera() -> void:
+	camera.global_position = player.global_position
+	camera.reset_smoothing()
+	camera.reset_physics_interpolation()
+	_camera_reset_ticks = 2
 
 static func scene_path(room_name: String) -> String:
 	return ROOMS_DIR + room_name.replace(" ", "") + ".tscn"
@@ -54,12 +63,21 @@ func _sync_current() -> void:
 	WorldState.visit(r.room_name)
 	$Map.set_current(r.room_name)
 
+## The camera is held to the room, plus a third of a screen past each side
+## that has a door, so the neighbour shows through its doorway and nowhere
+## else. Godot's limit smoothing turns the change at a doorway into a scroll.
 func _apply_limits(r: Room) -> void:
 	var b := r.bounds()
-	camera.limit_left = int(b.position.x)
-	camera.limit_top = int(b.position.y)
-	camera.limit_right = int(b.end.x)
-	camera.limit_bottom = int(b.end.y)
+	var grow := {"left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0}
+	for e in r.exits():
+		if e.inward.x > 0.0: grow.left = Section.LOOKAHEAD
+		elif e.inward.x < 0.0: grow.right = Section.LOOKAHEAD
+		elif e.inward.y > 0.0: grow.top = Section.LOOKAHEAD
+		elif e.inward.y < 0.0: grow.bottom = Section.LOOKAHEAD
+	camera.limit_left = int(b.position.x - grow.left)
+	camera.limit_top = int(b.position.y - grow.top)
+	camera.limit_right = int(b.end.x + grow.right)
+	camera.limit_bottom = int(b.end.y + grow.bottom)
 
 ## Puts the player at the named exit's arrival point (or the checkpoint's
 ## spawn point when exit_name is ""), keeps velocity, and makes that room
@@ -87,10 +105,8 @@ func place(room_name: String, exit_name: String) -> void:
 	player.enter_compartment(r.compartment)
 	current = null
 	_sync_current()
-	camera.global_position = player.global_position
-	camera.reset_smoothing()
 	player.reset_physics_interpolation() # no smear from where the player was
-	camera.reset_physics_interpolation()
+	_snap_camera()
 
 ## The backstop: the doors hold the player, but a gap in the geometry can
 ## never cross an edge the graph forbids. A leak is a body whose centre is
@@ -134,5 +150,5 @@ func _checkpoint_for(room_name: String) -> Checkpoint:
 	var r := section.room(room_name if has_room(room_name) else WorldGraph.START)
 	player.tracker.compartments.clear()
 	player.enter_compartment(r.compartment)
-	_camera_reset_pending = true
+	_camera_reset_ticks = 2
 	return r.checkpoint()
