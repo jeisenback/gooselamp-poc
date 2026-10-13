@@ -104,6 +104,10 @@ class Room:
             t += '[node name="Rim%d" type="Polygon2D" parent="Ring"]\ncolor = %s\npolygon = PackedVector2Array(%s)\n\n' % (i, SCENERY, f([c for p in pts for c in p]))
         self.node(t)
 
+    def ring_housing(self):
+        """The ring's housing along the ceiling: a band of arcs that slides while the ring turns (ring_housing.gd)."""
+        self.node('[node name="RingHousing" type="Node2D" parent="."]\nposition = Vector2(%s, 60)\nscript = %s\nwidth = %s\n\n' % (f(float(T)), self.res("res://scripts/ring_housing.gd", "Script"), f(float(self.w - 2 * T))))
+
     def checkpoint(self, pos, room_name):
         self.instance("Airlock", "res://scenes/Checkpoint.tscn", props={"position": "Vector2(%s)" % f(pos), "room_name": '"%s"' % room_name})
 
@@ -396,13 +400,7 @@ def ring_deck():
     r.state_block("VentsClosed", "PressureDoorBelow", 496, fy - DOOR, 160, T + DOOR, color=SCENERY)
     for i, x in enumerate([1500, 3500, 5500]):
         r.spawner("DroneSpawner%d" % i, "Drone", (x, 300))
-    # the ring housing: a band of dim arcs along the top of the corridor
-    t = ""
-    for i in range(0, r.w // 192):
-        x = i * 192 + 96
-        pts = [(x - 90, 120), (x - 60, 60), (x + 60, 60), (x + 90, 120), (x + 60, 108), (x, 80), (x - 60, 108)]
-        t += '[node name="Arc%d" type="Polygon2D" parent="."]\ncolor = %s\npolygon = PackedVector2Array(%s)\n\n' % (i, SCENERY, f([c for p in pts for c in p]))
-    r.node(t)
+    r.ring_housing()
     r.write()
 
 def control_room():
@@ -411,6 +409,7 @@ def control_room():
     r.exit("west", "left")
     r.exit("east", "right")
     r.switch("Panel1", "ring", (44, fy - 20))
+    r.ring_housing()
     r.spawner("WardenSpawner", "Warden", (576, fy - 280))
     # the boss door fills the east doorway until the Warden is down
     r.state_block("BossAlive", "BossDoor", r.w - T - DOOR, fy - 136, T + DOOR, 136, color=BRIGHT)

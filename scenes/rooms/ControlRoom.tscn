@@ -1,11 +1,12 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/Switch.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/Warden.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://scenes/Spawner.tscn" id="3"]
-[ext_resource type="Script" path="res://scripts/room.gd" id="4"]
-[ext_resource type="PackedScene" path="res://scenes/Compartment.tscn" id="5"]
-[ext_resource type="PackedScene" path="res://scenes/Exit.tscn" id="6"]
+[ext_resource type="Script" path="res://scripts/ring_housing.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/Warden.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/Spawner.tscn" id="4"]
+[ext_resource type="Script" path="res://scripts/room.gd" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/Compartment.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/Exit.tscn" id="7"]
 
 [sub_resource type="RectangleShape2D" id="sub_1"]
 size = Vector2(32.0, 480.0)
@@ -33,7 +34,7 @@ size = Vector2(56.0, 136.0)
 
 
 [node name="ControlRoom" type="Node2D"]
-script = ExtResource("4")
+script = ExtResource("5")
 room_name = "Control Room"
 floor_y = 616.0
 
@@ -107,7 +108,7 @@ polygon = PackedVector2Array(0.0, 616, 1152.0, 616, 1152.0, 648, 0.0, 648)
 color = Color(0.22, 0.19, 0.14, 1)
 polygon = PackedVector2Array(32, 616.0, 1120, 616.0, 1120, 622.0, 32, 622.0)
 
-[node name="Compartment" parent="." instance=ExtResource("5")]
+[node name="Compartment" parent="." instance=ExtResource("6")]
 position = Vector2(576.0, 324.0)
 plates_live = true
 room_name = "Control Room"
@@ -147,13 +148,13 @@ polygon = PackedVector2Array(1096, 330.0, 1120, 330.0, 1120, 466.0, 1096, 466.0)
 
 [node name="Exits" type="Node2D" parent="."]
 
-[node name="west" parent="Exits" instance=ExtResource("6")]
+[node name="west" parent="Exits" instance=ExtResource("7")]
 position = Vector2(16.0, 548.0)
 rotation = 0.0
 exit_name = "west"
 inward = Vector2(1, 0)
 
-[node name="east" parent="Exits" instance=ExtResource("6")]
+[node name="east" parent="Exits" instance=ExtResource("7")]
 position = Vector2(1136.0, 548.0)
 rotation = 0.0
 exit_name = "east"
@@ -163,7 +164,12 @@ inward = Vector2(-1, 0)
 position = Vector2(44, 596.0)
 switch_name = "ring"
 
-[node name="WardenSpawner" parent="." instance=ExtResource("3")]
+[node name="RingHousing" type="Node2D" parent="."]
+position = Vector2(32.0, 60)
+script = ExtResource("2")
+width = 1088.0
+
+[node name="WardenSpawner" parent="." instance=ExtResource("4")]
 position = Vector2(576, 336.0)
-scene = ExtResource("2")
+scene = ExtResource("3")
 
