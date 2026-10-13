@@ -6,6 +6,7 @@ class_name ZeroGMode extends RefCounted
 
 func step(p: Player, input: PlayerInput, delta: float) -> void:
 	p.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
+	p.crouching = false
 	if input.aim.x != 0.0:
 		p.facing = 1 if input.aim.x > 0.0 else -1
 	if not input.grab_held:

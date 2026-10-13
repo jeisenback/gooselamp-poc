@@ -21,8 +21,9 @@ func step(p: Player, input: PlayerInput, delta: float) -> void:
 	if p.jumping and not input.jump_held:
 		p.velocity.y = maxf(p.velocity.y, -Player.JUMP_CUT_SPEED)
 		p.jumping = false
+	p.crouching = p.is_on_floor() and input.aim.y > 0.0
 	if input.swing_pressed:
-		p.swing.start(p.aim_for_swing(input))
+		p.swing.start(p.aim_for_swing(input), p.crouching)
 	if input.fire_pressed or p.fire_buffered:
 		p.request_fire(input.aim if input.aim != Vector2.ZERO else Vector2(p.facing, 0))
 	p.move_and_slide()

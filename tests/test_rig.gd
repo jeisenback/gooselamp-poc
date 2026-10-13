@@ -40,3 +40,15 @@ func test_every_enemy_has_a_rig_with_idle_and_hit() -> void:
 		var e: Enemy = add(load("res://scenes/%s.tscn" % scene).instantiate())
 		var anim: AnimationPlayer = e.get_node("Rig/Anim")
 		assert_true(anim.has_animation("idle") and anim.has_animation("hit"), "%s poses" % scene)
+
+func test_holding_down_on_the_floor_crouches() -> void:
+	var r := make_room(true)
+	var p := spawn_player(Vector2(0, r.floor_y - 30))
+	await physics_frames(frame_count(0.25))
+	var anim: AnimationPlayer = p.get_node("Rig/Anim")
+	p.input_override.aim = Vector2.DOWN
+	await physics_frames(3)
+	assert_eq(anim.current_animation, "crouch", "crouching")
+	p.input_override.aim = Vector2.ZERO
+	await physics_frames(3)
+	assert_eq(anim.current_animation, "idle", "up again")

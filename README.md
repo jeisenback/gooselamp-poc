@@ -18,7 +18,7 @@ Design: `docs/superpowers/specs/2026-10-12-metroidvania-slice-design.md`. Milest
 | Grab | Shift, L | right shoulder |
 | Map | Tab, M | Y |
 
-In gravity: run, a jump that is shorter when you release early, a four-way swing, a down swing in the air that pogos off enemies and hazards. In zero-g: the movement keys thrust you (any angle on a stick) and you keep drifting when you let go; hold Grab against any surface to stop dead, aim and press Jump to kick off it faster than you can thrust; any swing that lands ricochets you away from the target. The gun has no recoil and fires the moment it is ready, even if you pressed early.
+In gravity: run, a jump that is shorter when you release early, a four-way swing, a down swing in the air that pogos off enemies and hazards, and a crouch (hold down on the floor) whose swing goes low enough to hit what crawls at your feet. In zero-g: the movement keys thrust you (any angle on a stick) and you keep drifting when you let go; hold Grab against any surface to stop dead, aim and press Jump to kick off it faster than you can thrust; any swing that lands ricochets you away from the target. The gun has no recoil and fires the moment it is ready, even if you pressed early.
 
 ## Fighting
 

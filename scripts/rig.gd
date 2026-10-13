@@ -5,7 +5,7 @@ class_name Rig extends Node2D
 ## player) a Line2D cloth that streams behind the body's velocity. In zero-g
 ## the whole rig tilts into its velocity.
 
-const POSES := ["idle", "run", "jump", "swing", "hit", "death"]
+const POSES := ["idle", "run", "jump", "swing", "hit", "death", "crouch"]
 const TILT := 35.0 * PI / 180.0
 const CLOTH_LINK := 5.0
 const SHOULDER := Vector2(0, -10)

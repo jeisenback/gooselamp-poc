@@ -77,3 +77,32 @@ func test_a_switch_does_not_bounce_the_swing() -> void:
 	await physics_frames(2)
 	assert_true(not WorldState.ring_on, "the panel was hit")
 	assert_true(p.velocity.x > -1.0 and p.velocity.x < 60.0, "no ricochet off a panel, only the stick's own thrust, got %s" % p.velocity)
+
+## A target only a low swing can reach: a thin panel lying on the floor.
+func _floor_panel(r: Dictionary) -> Switch:
+	var s: Switch = add(load("res://scenes/Switch.tscn").instantiate())
+	s.switch_name = "vents"
+	s.position = Vector2(Swing.REACH, r.floor_y - 2)
+	var shape := RectangleShape2D.new()
+	shape.size = Vector2(60, 4)
+	s.get_node("CollisionShape2D").shape = shape
+	return s
+
+func test_down_on_the_floor_swings_low_enough_to_hit_the_floor() -> void:
+	var r := make_room(true)
+	var p := spawn_player(Vector2(0, r.floor_y - 30))
+	await physics_frames(frame_count(0.25))
+	_floor_panel(r)
+	p.input_override.aim = Vector2.DOWN
+	p.input_override.swing_pressed = true
+	await physics_frames(3)
+	assert_true(WorldState.vents_open, "the low swing reaches a panel lying on the floor")
+
+func test_a_standing_swing_passes_over_the_floor() -> void:
+	var r := make_room(true)
+	var p := spawn_player(Vector2(0, r.floor_y - 30))
+	await physics_frames(frame_count(0.25))
+	_floor_panel(r)
+	p.input_override.swing_pressed = true
+	await physics_frames(3)
+	assert_true(not WorldState.vents_open, "a chest-height swing misses what lies on the floor")

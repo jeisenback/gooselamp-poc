@@ -28,6 +28,7 @@ var facing: int = 1                 # +1 right, -1 left
 var grabbed: bool = false
 var grab_normal: Vector2 = Vector2.ZERO
 var jumping: bool = false           # a floor jump is in progress; releasing jump cuts only that rise
+var crouching: bool = false         # holding down on the floor: the swing goes low
 var health: int = MAX_HEALTH
 var invulnerable_for: float = 0.0
 var dead: bool = false              # no input, no damage while true
@@ -74,6 +75,8 @@ func _update_pose() -> void:
 		pose = "idle" if grabbed else "jump"
 	elif not is_on_floor():
 		pose = "jump"
+	elif crouching:
+		pose = "crouch"
 	elif absf(velocity.x) > 1.0:
 		pose = "run"
 	if pose != _last_pose:
