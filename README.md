@@ -35,6 +35,8 @@ One section of the Hulk: a dock, a spine corridor, a breached wing, a vent branc
 
 Two switches. The gravity ring is thrown from two panels, one in the Control Room and one in the Blister; off, the whole section is zero-g. The bulkhead vents are thrown from one panel in the Vent Room; open, wind runs east through the branch, the Hangar hatch opens, the Locker hatch shuts, and the Shaft's pressure door opens. The Breach and the Blister have dead plates: always zero-g. Airlocks are in the Dock and on the Ring Deck. The boss door opens for good when the Warden is down; the slice ends beyond it.
 
+The section is one scene. Doorways are shared hull: both rooms open at the same place, and crossing one is a scroll, not a load. The camera is held to the room you are in, plus a third of a screen past each door, so a neighbour shows through its doorway and nowhere else. The Locker's window is a second camera on the Control Room: the Warden in the glass is the one you will fight. The ring's housing along the Ring Deck and the Control Room slides while the ring turns and stops when it is thrown off.
+
 Launch options for testing, as `godot -- --room=Spine%20West --ring=off --vents=open` or `?room=Spine%20West&ring=off&vents=open` on the web: start in a room, preset the switches.
 
 ## Tests
@@ -52,7 +54,7 @@ Exit code 0 means every test passed. The playtest plays scripted scenarios in th
 xvfb-run -a godot --fixed-fps 60 -s tests/playtest.gd
 ```
 
-CI runs both on every pull request and attaches the screenshots. `tools/build_rooms.py` writes the room scenes in `scenes/rooms/`; edit it and rerun it, or edit the scenes in the editor.
+CI runs both on every pull request and attaches the screenshots. `tools/build_rooms.py` writes the room scenes in `scenes/rooms/`; edit it and rerun it, or edit the scenes in the editor. `Section` places them at their `WorldGraph` grid offsets at runtime; a test checks that both sides of every doorway meet.
 
 ## Web build
 

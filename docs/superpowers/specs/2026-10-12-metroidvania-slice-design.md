@@ -150,14 +150,14 @@ The Hulk is a derelict carrier. The slice is one section: a dock, a spine corrid
 | 3 Breach | dead | Always zero-g, open to the stars. Grab, kick, fire. Mites on every surface. |
 | 4 Blister | dead | Observation dome with a view of the ring turning. Panel 2. First time gravity goes off; the ring is seen stopping. |
 | 5 Spine West (return) | live | In zero-g the gate floats clear and the shaft is flyable, but the pressure door at its top is sealed. |
-| 6 Spine East | live | First drone. Teaches ricochet and stagger. Its floor is higher than Spine West's, so the way back west is a drop over the gate's top in any state; only the way east needs zero-g. Without that drop, restoring gravity in the Control Room and descending through the Hangar would strand the player east of the gate. |
+| 6 Spine East | live | First drone. Teaches ricochet and stagger. Its floor is 220 px higher than Spine West's and the Vent Room's, so the way back west is a drop over the gate's top in any state; only the way east needs zero-g. Without that drop, restoring gravity in the Control Room and descending through the Hangar would strand the player east of the gate. The Vent Room's west door is at Spine East's level, three steps up from its floor. |
 | 7 Vent Room | live | Vents panel. |
-| 8 Locker | live | Enterable only with vents closed and ring off (hatch open, a loose cabinet floated clear). Holds the slice's one secret: a view port into the Control Room where the Warden can be watched. |
+| 8 Locker | live | Enterable only with vents closed and ring off (hatch open, a loose cabinet floated clear). Holds the slice's one secret: a porthole into the Control Room, a live second camera, where the Warden can be watched. |
 | 9 Workshop | live | Clingers on the walls. Vents open in zero-g, they tumble with the wind. |
 | 10 Hangar | live | Vents open: a gentle walk in gravity; in zero-g a gale toward a shredded hull wall that is a hazard. Ceiling torn open to the ring deck, reachable only in zero-g. The fast route is riding the gale and grabbing the ceiling in passing. |
 | 11 Shaft | live | The slow route up. Pressure door opens with the vents. Zero-g only. Mites on the walls. |
 | 12 Ring Deck | live | Corridor along the ring housing. Drones. Checkpoint 2. |
-| 13 Control Room | live | Panel 1. The Warden. |
+| 13 Control Room | live | Panel 1. The Warden. One cell, as on the map; the Warden's hover fits. |
 | 14 Exit | live | Boss door, open for good once the Warden is down. The slice ends beyond it. |
 
 **Required path.** Dock, Spine West, Breach, Blister (ring off), Spine West, Spine East, Vent Room (vents open), then Hangar or Shaft, Ring Deck, Control Room, Exit. The Locker is optional and is the composition lesson. Hangar against Shaft is the choice between fast and safe.
@@ -199,7 +199,7 @@ Godot 4.5, GDScript. Web export first, desktop second. Named input actions.
 - **`Map`**: reads visited rooms from `WorldState` and draws boxes.
 - **`Sfx`**: synthesized sounds.
 
-Rooms load one at a time with their neighbours.
+- **`Section`**: the thirteen rooms in one scene at their `WorldGraph` grid offsets, over a hull backdrop. Doorways are shared hull; the camera is held to the current room plus a lookahead past each door and scrolls between rooms (see `2026-10-13-section-continuity-design.md`).
 
 **Repo shape.** `scenes/`, `scripts/`, `tests/`, `tools/`, `docs/superpowers/`, `README.md`, `ROADMAP.md`.
 
