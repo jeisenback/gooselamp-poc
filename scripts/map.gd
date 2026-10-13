@@ -84,9 +84,9 @@ func _draw_map() -> void:
 			_canvas.draw_rect(Rect2(box.position + Vector2(4 + i * 7, 4), Vector2(5, 5)), PANEL)
 			i += 1
 	var game := get_parent() as Game
-	if game != null and game.room != null and WorldGraph.ROOMS.has(game.room.room_name):
-		var box := _box(game.room.room_name)
-		var b := game.room.bounds()
+	if game != null and game.current != null and WorldGraph.ROOMS.has(game.current.room_name):
+		var box := _box(game.current.room_name)
+		var b := game.current.bounds()
 		var t := (game.player.global_position - b.position) / b.size
 		var dot := box.position + Vector2(clampf(t.x, 0.0, 1.0), clampf(t.y, 0.0, 1.0)) * box.size
 		_canvas.draw_circle(dot, 3.0, DOT)
