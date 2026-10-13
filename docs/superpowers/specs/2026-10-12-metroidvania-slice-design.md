@@ -30,7 +30,7 @@ Everything else, combat, checkpoints, exploration, map, sits at Hollow Knight's 
 1. **Vertical slice**, thirteen rooms, two switches, three enemies, one boss.
 2. **Flat vector art**, parts animated with bones, no frame art.
 3. **Keyboard first, controller supported**, web export first, desktop second. No touch in the slice.
-4. **Light melee plus a gun that is also the thruster.** Melee is the main damage. The gun does chip damage and, in zero-g, moves you by recoil.
+4. **Light melee plus a gun.** Melee is the main damage. The gun does chip damage and staggers. (Revised 2026-10-13 after play: the gun was first designed as the suit's only thruster, moving the player by recoil in zero-g. That was unreliable and awkward to aim, so the suit thrusts from the movement keys instead and the gun has no recoil.)
 5. **Space, not water.** Water was considered (flooding compartments, swimming) and rejected: a drowned city echoes Hollow Knight's City of Tears, and water's drag and surface make a friendlier, less dynamic movement model than zero-g.
 6. **Checkpoints are airlocks**, not benches. The mechanic is the same.
 7. **No currency, drops, shops, charms, soul meter, healing in the field, text logs, NPCs, breath or fuel meter, or new movement abilities.** The world changes, the player does not.
@@ -39,7 +39,7 @@ Everything else, combat, checkpoints, exploration, map, sits at Hollow Knight's 
 
 The player has one set of inputs. What they do depends on whether the compartment has gravity.
 
-**Inputs:** move (eight directions in zero-g, left and right in gravity), jump, swing, fire, grab. Aim for swing and fire comes from the move direction. Named input actions map keyboard and controller in one place.
+**Inputs:** move (any direction in zero-g, left and right in gravity), jump, swing, fire, grab. Aim for swing and fire comes from the move direction: any angle from a stick, eight directions from keys. Named input actions map keyboard and controller in one place.
 
 ### With gravity
 
@@ -53,10 +53,11 @@ Hollow Knight's floor and nothing more.
 
 ### Without gravity
 
-- **Drift.** Velocity is conserved. No drag, no sink. Releasing the stick changes nothing.
+- **Thrust.** The stick accelerates the player along its direction, up to a thrust speed a little above kick speed. Speed gained elsewhere (a kick, a vent, a ricochet) is never cut by the stick.
+- **Drift.** Velocity is conserved. No drag, no sink. Releasing the stick changes nothing: you keep going until you grab something or thrust the other way.
 - **Grab.** On contact with any surface, holding grab stops the player dead and holds them there at any angle. While held, aim is free. Releasing grab leaves the player at rest on the surface. Grab is free and unlimited.
 - **Kick.** From a grab, jump launches the player off the surface in the aimed direction at a fixed speed, faster than run speed.
-- **Fire.** In zero-g a shot pushes the player the opposite way at a fixed recoil speed, lower than kick speed, with a cooldown so it cannot be held. The gun is the suit's only thruster. Fire at a wall behind you to approach a target; fire at the target to flee it.
+- **Fire.** The same gun as in gravity: no recoil, and firing from a grab keeps the grab. A press during the cooldown fires as soon as the gun is ready.
 - **Ricochet.** Hitting an enemy or hazard with the swing rebounds the player away from it, opposite the swing direction, in any of eight directions. It is pogo without a floor.
 
 ### Gravity boundaries
@@ -77,7 +78,7 @@ A hit costs one health, knocks the player back, and grants a short invulnerabili
 - Zero-g is always visibly marked: compartment tint, drifting debris, the player's pose and trailing cloth. Loose objects fall when gravity returns.
 - No breath, oxygen or fuel meter. The fire cooldown is the only limit.
 
-**Trade-off in one sentence.** Gravity: precise and gravity bound, the player pogos and commands the room. Zero-g: nothing is unreachable and the player is fastest, but cannot stop without a surface, and the things built for zero-g are better at it.
+**Trade-off in one sentence.** Gravity: precise and gravity bound, the player pogos and commands the room. Zero-g: nothing is unreachable and the player is fastest, but stopping takes a surface or a thrust the other way, and the things built for zero-g are better at it.
 
 ## World state
 
@@ -117,7 +118,7 @@ World state is saved: both switch positions, the boss flag, the last checkpoint 
 Five health. Health refills at a checkpoint and nowhere else.
 
 - **Swing.** One weapon, four directions, instant, short recovery. Hit stop on contact: a few frames where both parties freeze. One damage. Down swing pogos in gravity; any swing ricochets in zero-g.
-- **Fire.** One shot per cooldown. One chip damage and a stagger that interrupts the target's current action. Recoil in zero-g. Nothing else.
+- **Fire.** One shot per cooldown. One chip damage and a stagger that interrupts the target's current action. Nothing else.
 
 ### Enemies
 
@@ -132,7 +133,7 @@ Three, each living in both states so the switch changes them too. Three swing hi
 A large drone built to patrol the gravity ring, fought in the Control Room, the only room with a ring panel inside it.
 
 - **Gravity on:** it hovers above pogo height and charges in sweeping arcs. The floor is safe and precise. The player can chip it and dodge but cannot reach it, and it repairs when not pressured, so it cannot be killed this way.
-- **Gravity off:** it is fast and the whole room is its lane, but the player can reach it: ricochet off it, kick between grab points, fire at the wall behind to close. This is where damage happens and where the player dies.
+- **Gravity off:** it is fast and the whole room is its lane, but the player can reach it: thrust in, ricochet off it, kick between grab points. This is where damage happens and where the player dies.
 - When gravity returns while it is mid-charge, it staggers hard.
 - Its health does not reset within an attempt. Dying resets the fight.
 
@@ -207,7 +208,7 @@ Rooms load one at a time with their neighbours.
 The harness is Down Mine's: a headless runner with a per-test timing table, run by CI on every pull request, and a playtest job under a virtual display that screenshots scripted scenarios. Tests are written before what they test.
 
 - **Rules.** `WorldState` round-trips through save and load. A `Compartment` shows the right children in all four states. A `Vent` pushes hard in zero-g and barely in gravity. The `Warden` staggers when gravity returns mid-charge.
-- **Movement.** Scripted inputs in a flat room, asserting positions and velocities: kick speed, fire cooldown and recoil, ricochet direction, pogo height, momentum across a gravity boundary, that drift never decays, that grab stops dead.
+- **Movement.** Scripted inputs in a flat room, asserting positions and velocities: kick speed, thrust and its cap, fire cooldown and buffering, ricochet direction, pogo height, momentum across a gravity boundary, that drift never decays, that grab stops dead.
 - **Reachability.** The `WorldGraph` is walked for every state. Fails if any room cannot reach a switch panel in its state, or if the Exit cannot be reached from the Dock by the designed path. A second test checks every exit the graph declares exists in its scene.
 
 The playtest job plays the required path end to end, dies once on purpose, and screenshots each room in each state it is meant to be seen in.
@@ -222,7 +223,7 @@ The playtest job plays the required path end to end, dies once on purpose, and s
 | Enemy health | 3 |
 | Fire cooldown | 0.5 s |
 | Kick speed | 1.4 times run speed |
-| Recoil speed | 0.8 times run speed |
+| Thrust acceleration (zero-g) | 700 px/s^2, to 320 px/s |
 | Hit stop | 3 frames at 60 fps |
 | Invulnerability after a hit | 0.6 s |
 | Vent force in zero-g | enough to cross the Hangar in about 2 s |

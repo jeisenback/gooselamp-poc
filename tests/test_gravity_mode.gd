@@ -69,3 +69,21 @@ func test_a_stale_grab_is_dropped_in_gravity() -> void:
 	p.input_override.grab_held = true
 	await physics_frames(2)
 	assert_true(not p.grabbed, "gravity has no grab: a hold carried over from zero-g is dropped")
+
+func test_a_fire_press_during_the_cooldown_fires_when_the_gun_is_ready() -> void:
+	var r := make_room(true)
+	var p := spawn_player(Vector2(0, r.floor_y - 30))
+	await physics_frames(frame_count(0.25))
+	var shots := []
+	p.fired.connect(func(d): shots.append(d))
+	p.input_override.fire_pressed = true
+	await physics_frames(1)
+	p.input_override.fire_pressed = false
+	assert_eq(shots.size(), 1, "first shot")
+	await physics_frames(frame_count(0.2))
+	p.input_override.fire_pressed = true
+	await physics_frames(1)
+	p.input_override.fire_pressed = false
+	assert_eq(shots.size(), 1, "pressed during the cooldown: not yet")
+	await physics_frames(frame_count(Player.FIRE_COOLDOWN))
+	assert_eq(shots.size(), 2, "the buffered press fired as soon as the gun was ready")

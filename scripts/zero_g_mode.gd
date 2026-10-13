@@ -1,8 +1,8 @@
 class_name ZeroGMode extends RefCounted
 
-## The player without gravity: drift with momentum that never decays, grab
-## any surface to stop dead, kick off it, and fire for recoil. The gun is
-## the suit's only thruster.
+## The player without gravity: the stick thrusts (no drag, so you drift
+## when you let go), grab any surface to stop dead, kick off it. The gun
+## is just a gun here: no recoil, and firing keeps a grab.
 
 func step(p: Player, input: PlayerInput, delta: float) -> void:
 	p.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
@@ -10,21 +10,25 @@ func step(p: Player, input: PlayerInput, delta: float) -> void:
 		p.facing = 1 if input.aim.x > 0.0 else -1
 	if not input.grab_held:
 		p.grabbed = false
+	var kicked := false
 	if p.grabbed and input.jump_pressed:
 		var dir := input.aim if input.aim != Vector2.ZERO else p.grab_normal
 		p.velocity = dir * Player.KICK_SPEED
 		p.grabbed = false
+		kicked = true
 		Sfx.play("kick")
 	if input.swing_pressed:
 		p.swing.start(p.aim_for_swing(input))
-	if input.fire_pressed:
-		var dir := input.aim if input.aim != Vector2.ZERO else Vector2(p.facing, 0)
-		if p.fire(dir):
-			p.velocity += -dir * Player.RECOIL_SPEED
-			p.grabbed = false
+	if input.fire_pressed or p.fire_buffered:
+		p.request_fire(input.aim if input.aim != Vector2.ZERO else Vector2(p.facing, 0))
 	if p.grabbed:
 		p.velocity = Vector2.ZERO
 		return # held fast: no movement at all
+	if input.aim != Vector2.ZERO and not kicked:
+		# Thrust along the stick up to THRUST_MAX; speed from elsewhere is left alone.
+		var along := p.velocity.dot(input.aim)
+		if along < Player.THRUST_MAX:
+			p.velocity += input.aim * minf(Player.THRUST_ACCEL * delta, Player.THRUST_MAX - along)
 	var arriving := p.velocity
 	p.move_and_slide()
 	# Floating motion leaves velocity alone on a collision: a surface takes the

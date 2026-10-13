@@ -10,7 +10,8 @@ const GRAVITY := 1400.0
 const JUMP_SPEED := 520.0
 const JUMP_CUT_SPEED := 150.0       # releasing jump while rising caps upward speed here
 const KICK_SPEED := RUN_SPEED * 1.4
-const RECOIL_SPEED := RUN_SPEED * 0.8
+const THRUST_ACCEL := 700.0         # px/s^2 from the stick in zero-g
+const THRUST_MAX := 320.0           # the stick alone never pushes past this; kicks, vents and ricochets may
 const FIRE_COOLDOWN := 0.5
 const MAX_HEALTH := 5
 const INVULNERABLE := 0.6
@@ -31,6 +32,7 @@ var health: int = MAX_HEALTH
 var invulnerable_for: float = 0.0
 var dead: bool = false              # no input, no damage while true
 var fire_cooldown: float = 0.0
+var fire_buffered: bool = false     # a press during the cooldown fires as soon as the gun is ready
 
 @onready var swing: Swing = $Swing
 
@@ -120,6 +122,7 @@ func heal_full() -> void:
 func respawn(at: Vector2) -> void:
 	dead = false
 	invulnerable_for = 0.0
+	fire_buffered = false
 	velocity = Vector2.ZERO
 	grabbed = false
 	jumping = false
@@ -137,10 +140,20 @@ func enter_compartment(c: Compartment) -> void:
 func exit_compartment(c: Compartment) -> void:
 	tracker.exit(c)
 
+## A fire request from a press or a buffered press: fires now, or remembers
+## the press until the cooldown ends. True when a shot went out.
+func request_fire(direction: Vector2) -> bool:
+	if fire(direction):
+		fire_buffered = false
+		return true
+	fire_buffered = true
+	return false
+
 ## False while cooling down. Emits `fired` and starts the cooldown.
 func fire(direction: Vector2) -> bool:
 	if fire_cooldown > 0.0:
 		return false
+	fire_buffered = false
 	fire_cooldown = FIRE_COOLDOWN
 	Sfx.play("shot")
 	if get_parent() != null:

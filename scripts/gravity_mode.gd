@@ -23,6 +23,6 @@ func step(p: Player, input: PlayerInput, delta: float) -> void:
 		p.jumping = false
 	if input.swing_pressed:
 		p.swing.start(p.aim_for_swing(input))
-	if input.fire_pressed:
-		p.fire(input.aim if input.aim != Vector2.ZERO else Vector2(p.facing, 0))
+	if input.fire_pressed or p.fire_buffered:
+		p.request_fire(input.aim if input.aim != Vector2.ZERO else Vector2(p.facing, 0))
 	p.move_and_slide()

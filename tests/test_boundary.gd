@@ -19,7 +19,7 @@ func test_running_off_a_plate_keeps_going_straight() -> void:
 	assert_true(p.global_position.x > 50.0, "crossed into the dead room")
 	assert_true(p.in_zero_g(), "zero-g on the far side")
 	assert_true(absf(p.velocity.y) < 1.0, "no fall, got vy %f" % p.velocity.y)
-	assert_true(absf(p.velocity.x - Player.RUN_SPEED) < 1.0, "run speed carried across")
+	assert_true(p.velocity.x >= Player.RUN_SPEED - 1.0, "run speed carried across (the held stick thrusts on from there), got %f" % p.velocity.x)
 
 func test_flying_into_gravity_arcs_and_lands() -> void:
 	var rooms := _two_rooms()

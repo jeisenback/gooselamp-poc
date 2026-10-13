@@ -76,4 +76,4 @@ func test_a_switch_does_not_bounce_the_swing() -> void:
 	p.input_override.swing_pressed = true
 	await physics_frames(2)
 	assert_true(not WorldState.ring_on, "the panel was hit")
-	assert_eq(p.velocity, Vector2.ZERO, "no ricochet off a panel, got %s" % p.velocity)
+	assert_true(p.velocity.x > -1.0 and p.velocity.x < 60.0, "no ricochet off a panel, only the stick's own thrust, got %s" % p.velocity)

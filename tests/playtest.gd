@@ -203,6 +203,7 @@ func _every_room_every_state() -> void:
 			var r: Room = load(Game.scene_path(name)).instantiate()
 			root.add_child(r)
 			var cam := Camera2D.new()
+			cam.process_callback = Camera2D.CAMERA2D_PROCESS_PHYSICS # interpolation wants physics
 			var b := r.bounds()
 			cam.position = b.get_center()
 			var z := minf(1152.0 / b.size.x, 648.0 / b.size.y)
