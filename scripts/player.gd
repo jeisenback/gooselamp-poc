@@ -27,6 +27,7 @@ var tracker := CompartmentTracker.new()  # every compartment currently overlappi
 var facing: int = 1                 # +1 right, -1 left
 var grabbed: bool = false
 var grab_normal: Vector2 = Vector2.ZERO
+var grab_cooldown: float = 0.0      # set on a kick: grab can't instantly re-latch what you just kicked off
 var jumping: bool = false           # a floor jump is in progress; releasing jump cuts only that rise
 var crouching: bool = false         # holding down on the floor: the swing goes low
 var health: int = MAX_HEALTH
@@ -49,6 +50,7 @@ func _physics_process(delta: float) -> void:
 	var input: PlayerInput = input_override if input_override != null else PlayerInput.poll()
 	fire_cooldown = maxf(0.0, fire_cooldown - delta)
 	invulnerable_for = maxf(0.0, invulnerable_for - delta)
+	grab_cooldown = maxf(0.0, grab_cooldown - delta)
 	if dead:
 		_lie_there(delta)
 	elif in_zero_g():
