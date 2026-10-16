@@ -24,6 +24,8 @@ func _run() -> void:
 	var scenarios := [
 		["required_path", _required_path],
 		["death_and_respawn", _death_and_respawn],
+		["zero_g_controls", _zero_g_controls],
+		["combat_and_hud", _combat_and_hud],
 		["every_room_every_state", _every_room_every_state],
 	]
 	var failed := 0
@@ -199,6 +201,73 @@ func _death_and_respawn() -> void:
 	check(game.player.global_position.distance_to(game.current.checkpoint().spawn_point()) < 2.0, "at the airlock (%.1f px off, velocity %s)" % [game.player.global_position.distance_to(game.current.checkpoint().spawn_point()), game.player.velocity])
 	check(not WorldState.ring_on and WorldState.vents_open, "switches as they were left")
 	await shot("respawned")
+
+## Real keys drive zero-g thrust, a wall stop under Grab, and a kick off it.
+func _zero_g_controls() -> void:
+	await _start_game()
+	game.place("Breach", "west")
+	await frames(5)
+	check(game.player.in_zero_g(), "the Breach is always zero-g")
+	game.player.global_position = Vector2(200, 200) # clear of the fragments, well short of the east wall
+	game.player.velocity = Vector2.ZERO
+	await shot("Breach entered")
+	await hold([KEY_D], 40)
+	check(game.player.velocity.x > 50.0, "the stick thrusts right, got %s" % game.player.velocity)
+	await shot("thrusting right")
+	var drifting := game.player.velocity
+	await frames(60)
+	check(game.player.velocity.is_equal_approx(drifting), "no drag: still drifting at %s, now %s" % [drifting, game.player.velocity])
+	await hold([KEY_D], 300) # drift on into the east wall
+	await frames(10)
+	check(absf(game.player.velocity.x) < 1.0, "the wall stops a drifting body, got %s" % game.player.velocity)
+	await shot("stopped at the wall")
+	key_event(KEY_SHIFT, true)
+	await frames(5)
+	check(game.player.grabbed, "holding Grab against the wall grabs it")
+	await shot("grabbed")
+	key_event(KEY_W, true)
+	await tap(KEY_SPACE)
+	key_event(KEY_W, false)
+	key_event(KEY_SHIFT, false)
+	await frames(3)
+	check(not game.player.grabbed, "the kick lets go")
+	check(game.player.velocity.y < -100.0, "kicked off aimed up, got %s" % game.player.velocity)
+	await shot("kicked off")
+
+## Real keys swing and fire on the Dock's mites; the HUD follows health down and back up.
+func _combat_and_hud() -> void:
+	await _start_game()
+	game.place("Dock", "west")
+	await frames(5)
+	var hud: Hud = game.get_node("HUD")
+	check(hud.pips_lit() == Player.MAX_HEALTH, "the HUD starts full")
+	await shot("Dock")
+	var mite: Mite = game.current.find_children("*", "Mite", true, false)[0]
+	check(mite != null, "a mite is in the Dock")
+	game.player.global_position = mite.global_position + Vector2(0, -4) # stand into it for a contact hit
+	game.player.velocity = Vector2.ZERO
+	await frames(10)
+	check(game.player.health < Player.MAX_HEALTH, "contact with the mite cost a health pip")
+	check(hud.pips_lit() == game.player.health, "the HUD pips follow health, %d lit for %d health" % [hud.pips_lit(), game.player.health])
+	await shot("hit, HUD down a pip")
+	var attempts := 0
+	while is_instance_valid(mite) and attempts < 6: # a moving target can duck a swing; keep trying
+		await swing_at(mite, 1)
+		attempts += 1
+	check(not is_instance_valid(mite), "real swings killed it")
+	await shot("mite down")
+	var mite2: Mite = game.current.find_children("*", "Mite", true, false)[0]
+	game.player.global_position = mite2.global_position + Vector2(-120, 0) # level with it: fire has no vertical aim without a stick
+	game.player.velocity = Vector2.ZERO
+	game.player.facing = 1
+	await tap(KEY_C) # fire at once: a crawling mite's y drifts while it rounds a corner
+	await frames(10)
+	check(mite2.staggered_for > 0.0, "a real shot staggers the second mite")
+	await shot("second mite staggered")
+	await swing_at(game.current.checkpoint(), 1)
+	check(game.player.health == Player.MAX_HEALTH, "resting at the airlock heals to full")
+	check(hud.pips_lit() == Player.MAX_HEALTH, "the HUD relights every pip")
+	await shot("rested, HUD full")
 
 ## Every room in every state it is designed for, whole room in frame.
 func _every_room_every_state() -> void:
