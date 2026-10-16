@@ -415,6 +415,30 @@ def exit_room():
     r.instance("SliceEnd", "res://scenes/SliceEnd.tscn", props={"position": "Vector2(%s)" % f((900, fy - 64))})
     r.write()
 
+def ricochet_corridor_test():
+    """Standalone design sandbox, not wired into WorldGraph and not part of
+    the slice: a narrow vertical shaft, hazard walls close on both sides, a
+    chain of mites up the centreline. Ricochet as the obstacle, not the
+    solution: careless thrust drifts into a hazard over a long climb (no
+    drag to correct it), but swinging each mite resets you to a known,
+    centred velocity. Play with:
+      godot -- --room="Ricochet Corridor"
+    """
+    r = Room("Ricochet Corridor", (1, 2), False)
+    fy = r.h - T
+    corridor_left, corridor_right = 480, 672
+    r.hazard("HazardLeft", ((T + corridor_left) / 2, 700), size=(corridor_left - T, 1100))
+    r.hazard("HazardRight", ((corridor_right + r.w - T) / 2, 700), size=(r.w - T - corridor_right, 1100))
+    y = fy - 260
+    i = 0
+    while y > 180:
+        r.block(546, y, 60, 24, color=SCENERY)
+        r.spawner("MiteSpawner%d" % i, "Mite", (576, y - 8))
+        y -= 220
+        i += 1
+    r.polygon(".", "Goal", BRIGHT, r.rect_pts(0, 0, 80, 80), pos=(536, 80))
+    r.write()
+
 if __name__ == "__main__":
     dock()
     breach()
@@ -429,4 +453,5 @@ if __name__ == "__main__":
     ring_deck()
     control_room()
     exit_room()
+    ricochet_corridor_test()
     print("rooms written")
