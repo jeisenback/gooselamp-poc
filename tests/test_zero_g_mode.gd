@@ -106,6 +106,50 @@ func test_kick_along_the_grabbed_surface_lets_go() -> void:
 	assert_true(not p.grabbed, "still going, not re-latched by the wall it is sliding along")
 	assert_true(p.velocity.is_equal_approx(Vector2.UP * Player.KICK_SPEED), "kicked up along the wall, got %s" % p.velocity)
 
+func test_grab_catches_a_near_miss_within_range() -> void:
+	var r := make_room(false)
+	var p := spawn_player(Vector2(978, 0)) # 12px short of the right wall (inside ZeroGMode.GRAB_RANGE)
+	p.velocity = Vector2(5, 0) # a nudge toward the wall, just to give the catch a direction
+	p.input_override.grab_held = true
+	await physics_frames(1)
+	assert_true(p.grabbed, "catches a wall within range even without touching it yet")
+	assert_true(p.grab_normal.is_equal_approx(Vector2.LEFT), "normal points back into the room, got %s" % p.grab_normal)
+	assert_eq(p.velocity, Vector2.ZERO, "stops dead once caught")
+	assert_true(absf(p.global_position.x - 990.0) < 0.5, "lands on the wall, not short of it, got %s" % p.global_position)
+
+func test_grab_does_not_catch_beyond_its_range() -> void:
+	var r := make_room(false)
+	var p := spawn_player(Vector2(966, 0)) # 24px short of the right wall: outside ZeroGMode.GRAB_RANGE
+	p.velocity = Vector2(5, 0)
+	p.input_override.grab_held = true
+	await physics_frames(1)
+	assert_true(not p.grabbed, "too far to catch")
+
+func test_grab_latches_on_contact_without_moving_into_the_surface() -> void:
+	var r := make_room(false)
+	var p := spawn_player(Vector2(990, 0)) # touching the right wall already
+	p.velocity = Vector2(0, 50) # sliding along it, not into it
+	p.input_override.grab_held = true
+	await physics_frames(1)
+	assert_true(p.grabbed, "contact alone catches; moving into the wall is not required")
+	assert_eq(p.velocity, Vector2.ZERO, "stops dead once caught")
+
+func test_kick_along_a_wall_relatches_once_the_grace_period_ends() -> void:
+	var r := make_room(false)
+	var p := spawn_player(Vector2(900, 0))
+	p.velocity = Vector2(400, 0)
+	p.input_override.grab_held = true
+	await physics_frames(frame_count(1.0))
+	assert_true(p.grabbed, "grabbed the right wall")
+	p.input_override.aim = Vector2.UP
+	p.input_override.jump_pressed = true
+	await physics_frames(1)
+	p.input_override.jump_pressed = false
+	p.input_override.aim = Vector2.ZERO # the kick took its direction; no thrust after
+	await physics_frames(frame_count(0.15) + 2) # past ZeroGMode.KICK_GRACE
+	assert_true(p.grabbed, "the same wall catches again once the grace period ends")
+	assert_true(p.grab_normal.is_equal_approx(Vector2.LEFT), "same wall, got %s" % p.grab_normal)
+
 func test_thrust_builds_to_its_cap_and_no_further() -> void:
 	var r := make_room(false)
 	var p := spawn_player(Vector2(-800, 0))

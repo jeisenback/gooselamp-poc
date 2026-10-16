@@ -4,6 +4,9 @@ class_name ZeroGMode extends RefCounted
 ## when you let go), grab any surface to stop dead, kick off it. The gun
 ## is just a gun here: no recoil, and firing keeps a grab.
 
+const GRAB_RANGE := 14.0   # a near-miss this close to a surface still catches, held or not
+const KICK_GRACE := 0.15   # seconds after a kick before grab can re-latch what was just kicked off
+
 func step(p: Player, input: PlayerInput, delta: float) -> void:
 	p.motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 	p.crouching = false
@@ -16,6 +19,7 @@ func step(p: Player, input: PlayerInput, delta: float) -> void:
 		var dir := input.aim if input.aim != Vector2.ZERO else p.grab_normal
 		p.velocity = dir * Player.KICK_SPEED
 		p.grabbed = false
+		p.grab_cooldown = KICK_GRACE
 		kicked = true
 		Sfx.play("kick")
 	if input.swing_pressed:
@@ -38,11 +42,22 @@ func step(p: Player, input: PlayerInput, delta: float) -> void:
 		var normal := p.get_slide_collision(i).get_normal()
 		if p.velocity.dot(normal) < 0.0:
 			p.velocity = p.velocity.slide(normal)
-	if input.grab_held and p.get_slide_collision_count() > 0:
-		var normal := p.get_slide_collision(0).get_normal()
-		# Latch on arrival (moving into the surface) or at rest against it; a body
-		# sliding along a surface it just kicked off is still in contact and must not.
-		if arriving.dot(normal) < 0.0 or arriving.is_zero_approx():
+	if input.grab_held and p.grab_cooldown <= 0.0:
+		# Any contact catches, moving in or just sliding along; a near miss within
+		# GRAB_RANGE catches too. grab_cooldown alone keeps a kick from instantly
+		# re-latching what it just kicked off.
+		var normal := Vector2.ZERO
+		var found := false
+		if p.get_slide_collision_count() > 0:
+			normal = p.get_slide_collision(0).get_normal()
+			found = true
+		elif arriving.length() > 0.0:
+			var probe := p.move_and_collide(arriving.normalized() * GRAB_RANGE, true)
+			if probe != null:
+				normal = probe.get_normal()
+				found = true
+				p.global_position += probe.get_travel() # close the gap: a catch lands you on the surface, not short of it
+		if found:
 			if not p.grabbed:
 				Sfx.play("grab")
 			p.grabbed = true
