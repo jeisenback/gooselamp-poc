@@ -77,6 +77,17 @@ func test_fire_has_no_recoil_and_fires_once_per_cooldown() -> void:
 	await physics_frames(4)
 	assert_eq(shots.size(), 2, "the second shot once the cooldown ends")
 
+func test_fire_follows_a_held_aim() -> void:
+	var r := make_room(false)
+	var p := spawn_player(Vector2(0, 0))
+	var shots := []
+	p.fired.connect(func(d): shots.append(d))
+	p.input_override.aim = Vector2(1, -1).normalized()
+	p.input_override.fire_pressed = true
+	await physics_frames(1)
+	assert_eq(shots.size(), 1, "one shot")
+	assert_true(shots[0].is_equal_approx(Vector2(1, -1).normalized()), "fires along the aim, got %s" % shots[0])
+
 func test_fire_keeps_a_grab() -> void:
 	var r := make_room(false)
 	var p := spawn_player(Vector2(900, 0))

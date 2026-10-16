@@ -62,6 +62,18 @@ func test_fire_in_gravity_has_no_recoil_and_cools_down() -> void:
 	assert_eq(shots[0], Vector2.RIGHT, "fires the way it faces when aim is zero")
 	assert_true(absf(p.velocity.x) < 1.0, "no recoil in gravity")
 
+func test_fire_follows_a_held_aim() -> void:
+	var r := make_room(true)
+	var p := spawn_player(Vector2(0, r.floor_y - 30))
+	await physics_frames(frame_count(0.25))
+	var shots := []
+	p.fired.connect(func(d): shots.append(d))
+	p.input_override.aim = Vector2.UP
+	p.input_override.fire_pressed = true
+	await physics_frames(1)
+	assert_eq(shots.size(), 1, "one shot")
+	assert_eq(shots[0], Vector2.UP, "fires where aimed, not just where it faces")
+
 func test_a_stale_grab_is_dropped_in_gravity() -> void:
 	var r := make_room(true)
 	var p := spawn_player(Vector2(0, r.floor_y - 30))
